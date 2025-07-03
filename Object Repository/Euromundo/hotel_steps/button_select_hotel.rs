@@ -10,7 +10,8 @@
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>//*[@id=&quot;results-list&quot;]/div[2]/div/div[1]/article/div[1]/div[2]/div[3]/button</value>
+         <value>//*[@id=&quot;results-list&quot;]/div[2]/div/div[1]/article/div[1]/div[2]/div[3]/button&#xd;
+</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
