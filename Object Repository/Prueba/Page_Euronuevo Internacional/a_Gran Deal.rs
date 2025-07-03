@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>a_Gran Deal</name>
+   <tag></tag>
+   <elementGuidId>09261921-f80c-41b8-8bc6-6eaf3fdf2b48</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>XPATH</key>
+         <value>//header[@id='home-top']/div/div/div/div/ul/li/a</value>
+      </entry>
+      <entry>
+         <key>CSS</key>
+         <value>ul.nav.nav-tabs > li.active > a</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=tab[name=&quot; Gran Deal&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>a</value>
+      <webElementGuid>332b40bf-ce5f-411a-b8c0-f01fa836f8ca</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>href</name>
+      <type>Main</type>
+      <value>#_ctl1__ctl1__ctl1_pageBody_pageBody_searcher_ctlMultiSearcher-packagesAer</value>
+      <webElementGuid>5cd02393-1037-43b0-b141-cb316cd8277c</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>aria-controls</name>
+      <type>Main</type>
+      <value>_ctl1__ctl1__ctl1_pageBody_pageBody_searcher_ctlMultiSearcher-packagesAer</value>
+      <webElementGuid>b3009ad1-7e4e-4321-a6d5-92910f7276ea</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>role</name>
+      <type>Main</type>
+      <value>tab</value>
+      <webElementGuid>952f101d-2d19-4044-a4c1-4361f2e488f0</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>data-toggle</name>
+      <type>Main</type>
+      <value>tab</value>
+      <webElementGuid>b8f99ded-4799-4354-9ea1-ffe729abb5e2</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>Gran Deal</value>
+      <webElementGuid>be8de711-086f-47d3-9735-58e1d6b77b74</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;home-top&quot;)/div[@class=&quot;home-v3__searcher&quot;]/div[@class=&quot;multi-searcher&quot;]/div[@class=&quot;multi-searcher__tabs&quot;]/div[@class=&quot;container&quot;]/ul[@class=&quot;nav nav-tabs&quot;]/li[@class=&quot;active&quot;]/a[1]</value>
+      <webElementGuid>516a3c2f-a4a0-4907-909d-b99bd7e1ea5d</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//header[@id='home-top']/div/div/div/div/ul/li/a</value>
+      <webElementGuid>0477b131-5ae0-4a6b-abdc-257ab6ff664e</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:link</name>
+      <type>Main</type>
+      <value>(//a[contains(text(),'Gran Deal')])[2]</value>
+      <webElementGuid>f2d1c2db-9392-4c2c-923e-56c8c791858a</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Teléfono'])[3]/following::a[1]</value>
+      <webElementGuid>45df267c-661c-4d41-af98-f502dd20ed77</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Tipo de Cambio: ($ 19.10 MXN = $ 1.00 USD)'])[2]/following::a[2]</value>
+      <webElementGuid>ae55b2fa-604e-4377-821a-4882385ed9c2</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Vamos con todo'])[1]/preceding::a[1]</value>
+      <webElementGuid>a620ac70-4c50-4d75-bd73-eb3c5aa4c355</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Paquetes Carry On'])[2]/preceding::a[2]</value>
+      <webElementGuid>808f15e7-5c6b-4530-9057-756e35ddb090</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:href</name>
+      <type>Main</type>
+      <value>//a[contains(@href, '#_ctl1__ctl1__ctl1_pageBody_pageBody_searcher_ctlMultiSearcher-packagesAer')]</value>
+      <webElementGuid>fb61c815-b8bf-48c3-b284-6327ef8cd6fd</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//div/div/div/ul/li/a</value>
+      <webElementGuid>dd8c6a40-9cc3-43f9-87e8-a16635840623</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//a[@href = '#_ctl1__ctl1__ctl1_pageBody_pageBody_searcher_ctlMultiSearcher-packagesAer' and (text() = 'Gran Deal' or . = 'Gran Deal')]</value>
+      <webElementGuid>4bdae410-429e-4355-b5c1-564c1394bff4</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

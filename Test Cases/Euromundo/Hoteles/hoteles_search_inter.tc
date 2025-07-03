@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>hoteles_search_inter</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>9ae7bd1c-817c-4e62-9bb8-1414c80acc03</testCaseGuid>
+</TestCaseEntity>

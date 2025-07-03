@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>button_Finalizar reserva</name>
+   <tag></tag>
+   <elementGuidId>2e504081-b3c5-42b0-a485-a33b65f52cd6</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>XPATH</key>
+         <value>(//button[@type='button'])[11]</value>
+      </entry>
+      <entry>
+         <key>CSS</key>
+         <value>button.col-xs-12.btn.btn-medium.btn-primary.booking-data__continue-button.js-add-to-basket-packages</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=button[name=&quot;Finalizar reserva&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>button</value>
+      <webElementGuid>115b0f63-a8ec-4685-8541-702a6ccb41ab</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>type</name>
+      <type>Main</type>
+      <value>button</value>
+      <webElementGuid>04a42296-9469-4293-9b69-522866dbc975</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>col-xs-12 btn btn-medium btn-primary booking-data__continue-button js-add-to-basket-packages</value>
+      <webElementGuid>2fca8edf-ac5a-4c28-854a-3b8bf059e9b0</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>Finalizar reserva</value>
+      <webElementGuid>2c62293c-ec1d-4a28-aac8-f9a4d84d282d</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;main-content&quot;)/div[@class=&quot;container&quot;]/div[@class=&quot;booking-data&quot;]/div[@class=&quot;booking booking-sidebar booking-data__summary&quot;]/div[@class=&quot;booking-data__actions hidden-sm hidden-xs&quot;]/button[@class=&quot;col-xs-12 btn btn-medium btn-primary booking-data__continue-button js-add-to-basket-packages&quot;]</value>
+      <webElementGuid>15392ec6-8e8e-4379-8f60-bf0c133c5d4c</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:attributes</name>
+      <type>Main</type>
+      <value>(//button[@type='button'])[11]</value>
+      <webElementGuid>beb26741-c5ae-4e7a-b0f4-3818bc741cd0</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//div[@id='main-content']/div[2]/div/div[2]/div[6]/button</value>
+      <webElementGuid>026ef97c-ce0b-4908-8cb8-feeb33f6ef6c</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Siga comprando otros productos'])[1]/following::button[1]</value>
+      <webElementGuid>a9124cba-ac05-4a7c-82f6-0f274ecd0ab0</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='$ 3,700.97 USD'])[3]/following::button[2]</value>
+      <webElementGuid>e3cdf99c-fd83-4ba0-8cc2-0629b694019c</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='GDCO DESCUBRE COLOMBIA ¥ MEX CAT TURISTA'])[2]/preceding::button[1]</value>
+      <webElementGuid>ae28ab06-d614-49b6-9147-9974dbc0c4be</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Info'])[1]/preceding::button[1]</value>
+      <webElementGuid>81c4792b-bc18-4d40-a281-d86903fbf355</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='Finalizar reserva']/parent::*</value>
+      <webElementGuid>bb96fa8a-c719-4970-b436-280dcbc072b2</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//div[6]/button</value>
+      <webElementGuid>a74eecde-3d6c-49ac-8122-2129d1d7657b</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//button[@type = 'button' and (text() = 'Finalizar reserva' or . = 'Finalizar reserva')]</value>
+      <webElementGuid>aca73cbf-3f56-4766-b065-c43f0eb8e278</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>
