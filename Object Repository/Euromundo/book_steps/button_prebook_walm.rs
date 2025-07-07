@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>input_arrival_transfers_walm</name>
+   <name>button_prebook_walm</name>
    <tag></tag>
-   <elementGuidId>81fddd76-2a2e-4ec0-8e8a-f7563caf3c70</elementGuidId>
+   <elementGuidId>abf01626-640f-4044-80b8-38af1d0d0967</elementGuidId>
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//*[@id=&quot;main-content&quot;]/div[2]/div/div[4]/ul/li/div[2]/div[2]/div[1]/label[2]/select</value>
+         <value>//*[@id=&quot;results-list&quot;]/div[2]/div/div[2]/article/div[1]/div[2]/div[3]/button</value>
       </entry>
       <entry>
          <key>BASIC</key>
+         <value></value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

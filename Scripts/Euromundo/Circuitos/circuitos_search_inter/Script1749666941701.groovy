@@ -34,9 +34,17 @@ WebUI.mouseOver(findTestObject('Euromundo/circuitos/repositpory_circuitos_inter/
 WebUI.click(findTestObject('Euromundo/circuitos/repositpory_circuitos_inter/select_circuitos_inter'))
 
 // 📦 Criterios de búsqueda
-WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_box'), 10)
+TestObject buttonBox = findTestObject('Euromundo/book_steps/button_box')
 
-WebUI.click(findTestObject('Euromundo/book_steps/button_box'))
+if (WebUI.waitForElementPresent(buttonBox, 10)) {
+    WebUI.waitForElementVisible(buttonBox, 5)
+    WebUI.waitForElementClickable(buttonBox, 5)
+    WebUI.click(buttonBox)
+} else {
+    WebUI.comment("❌ No se encontró el botón 'button_box' dentro del tiempo de espera.")
+    WebUI.takeScreenshot()
+    assert false : "Elemento 'button_box' no encontrado en DOM"
+}
 
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/input_destination_inter'), 15)
 
@@ -147,9 +155,9 @@ WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_finali
 
 WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax1_extended'), 'MR', true)
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_name_pax1_extended'), 'Juan Daniel')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_name_extended1_pax1'), 'Juan Daniel')
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_pax1_extended'), 'Gomez')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_extended_pax1'), 'Gomez')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax1_extended'), '25/10/1990')
 
@@ -159,9 +167,9 @@ WebUI.setText(findTestObject('Euromundo/pax_page/set_expiration_document_new_pax
 
 WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax2_extended'), 'MRS', true)
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_name_pax2_extended'), 'Johana')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_name_extended1_pax2'), 'Johana')
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_pax2_extended'), 'Gomez')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_extended_pax2'), 'Gomez')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax2_extended'), '18/09/1995')
 

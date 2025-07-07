@@ -107,9 +107,9 @@ WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_finali
 // PAX 1
 WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax1_extended'), 'MR', true)
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_name_pax1_extended'), 'Juan Daniel')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_name_extended1_pax1'), 'Juan Daniel')
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_pax1_extended'), 'Gomez')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_extended_pax1'), 'Gomez')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax1_extended'), '25/10/1990')
 
@@ -120,9 +120,9 @@ WebUI.setText(findTestObject('Euromundo/pax_page/set_expiration_document_pax1'),
 // PAX 2
 WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax2_extended'), 'MRS', true)
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_name_pax2_extended'), 'Johana')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_name_extended1_pax2'), 'Johana')
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_pax2_extended'), 'Gomez')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_extended_pax2'), 'Gomez')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax2_extended'), '18/09/1995')
 

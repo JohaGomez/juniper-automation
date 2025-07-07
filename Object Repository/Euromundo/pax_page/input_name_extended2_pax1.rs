@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>input_arrival_transfers_walm</name>
+   <name>input_name_extended2_pax1</name>
    <tag></tag>
-   <elementGuidId>81fddd76-2a2e-4ec0-8e8a-f7563caf3c70</elementGuidId>
+   <elementGuidId>30e5c308-e52c-4b34-813f-156bf8afb772</elementGuidId>
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//*[@id=&quot;main-content&quot;]/div[2]/div/div[4]/ul/li/div[2]/div[2]/div[1]/label[2]/select</value>
+         <value>//*[@id=&quot;main-content&quot;]/div[2]/div/div[3]/div[3]/div[3]/div/div[2]/div/div[3]/div[1]/div[2]/label[2]/input&#xd;
+</value>
       </entry>
       <entry>
          <key>BASIC</key>
+         <value></value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

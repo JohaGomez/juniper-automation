@@ -71,7 +71,7 @@ WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europ
 WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europamundo/input_departure_transfers_oti'), 
     '96635C11AA7CBC69DC03854224814561', true)
 
-WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_quote2_walm'))
+CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/europamundo/repository_europamundo/button_quote2'))
 
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_continue'))
 
@@ -83,11 +83,9 @@ WebUI.setText(findTestObject('Euromundo/pax_page/input_name_pax1'), 'Juan Daniel
 
 WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_pax1'), 'Gomez')
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax1_extended'), '25/10/1990')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_extended2_pax1'), '25/10/1990')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/set_document_extended_pax1'), '1232434')
-
-WebUI.setText(findTestObject('Euromundo/pax_page/set_expiration_document_extended_pax1'), '21/09/2031')
 
 // Pax 2
 WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax2'), 'MRS', true)
@@ -96,11 +94,9 @@ WebUI.setText(findTestObject('Euromundo/pax_page/input_name_pax2'), 'Johana')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_pax2'), 'Gomez')
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax2_extended'), '18/09/1995')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_extended2_pax2'), '18/09/1995')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/set_document_extended_pax2'), '43534234')
-
-WebUI.setText(findTestObject('Euromundo/pax_page/set_expiration_document_extended_pax2'), '21/09/2031')
 
 WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_prebook'))
 
@@ -175,10 +171,4 @@ String actualText = WebUI.getText(alertCancel)
 WebUI.verifyMatch(actualText.trim(), 'Su reserva ha sido cancelada.', false, FailureHandling.STOP_ON_FAILURE)
 
 WebUI.comment('✅ El texto de cancelación se encontró correctamente.')
-
-WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_quote2'))
-
-WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_continue'))
-
-WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_finalization_prebook'), 10)
 
