@@ -6,14 +6,17 @@
    <elementGuidId>923c7782-55fd-4272-b9e6-5da53cd5381f</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>XPATH</key>
-         <value>//*[@id=&quot;packagesaer-searcher-destination&quot;]</value>
+         <key>CSS</key>
       </entry>
       <entry>
          <key>BASIC</key>
       </entry>
       <entry>
-         <key>CSS</key>
+         <key>XPATH</key>
+         <value>//select[@id='packagesaer-searcher-destination']&#xd;
+&#xd;
+&#xd;
+</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

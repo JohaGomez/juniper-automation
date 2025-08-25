@@ -73,7 +73,7 @@ WebUI.setText(findTestObject('Euromundo/pax_page/input_name_extended1_pax1'), 'J
 
 WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_extended_pax1'), 'Gomez')
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax1_extended'), '25/10/1990')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_extended_pax1'), '25/10/1990')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/set_expiration_document_extended_pax1'), '1232434')
 
@@ -85,7 +85,7 @@ WebUI.setText(findTestObject('Euromundo/pax_page/input_name_extended1_pax2'), 'J
 
 WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_extended_pax2'), 'Gomez')
 
-WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax2_extended'), '18/09/1995')
+WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_extended_pax2'), '18/09/1995')
 
 WebUI.setText(findTestObject('Euromundo/pax_page/set_expiration_document_extended_pax2'), '43534234')
 

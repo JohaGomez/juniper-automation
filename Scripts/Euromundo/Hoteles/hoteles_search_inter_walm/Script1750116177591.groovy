@@ -26,11 +26,11 @@ import com.kms.katalon.core.testobject.ConditionType as ConditionType
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_mxn'), [:], FailureHandling.STOP_ON_FAILURE)
 
 // ☰ Menú Hoteles Internacionales
-WebUI.waitForElementClickable(findTestObject('Euromundo/hoteles/repository_hoteles_inter/menu_hoteles'), 10)
+WebUI.waitForElementClickable(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/menu_hoteles'), 10)
 
-WebUI.mouseOver(findTestObject('Euromundo/hoteles/repository_hoteles_inter/menu_hoteles'))
+WebUI.mouseOver(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/menu_hoteles'))
 
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/select_hoteles_inter_walm'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/select_hoteles_inter_walm'))
 
 // 🧳 Ingreso a buscador
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_box'), 10)
@@ -40,14 +40,14 @@ WebUI.click(findTestObject('Euromundo/book_steps/button_box'))
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
 
 // 🌍 Selección destino
-WebUI.waitForElementClickable(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_destination_hoteles_inter'), 
+WebUI.waitForElementClickable(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_destination_hoteles_inter'), 
     15)
 
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_destination_hoteles_inter'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_destination_hoteles_inter'))
 
-WebUI.setText(findTestObject('Euromundo/hoteles/repository_hoteles_inter/set_zone_selector'), 'Las')
+WebUI.setText(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/set_zone_selector'), 'Las')
 
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/set_autocomplete_city_LAS'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/set_autocomplete_city_LAS'))
 
 // 📅 Fechas
 CustomKeywords.'utils.FechaUtils.setFechasIdaYRegreso'('Euromundo/hoteles/repository_hoteles_inter/input_date_origin_hoteles', 

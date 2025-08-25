@@ -29,9 +29,9 @@ WebUI.callTestCase(findTestCase('Euromundo/Login/Login_otn'), [:], FailureHandli
 
 
 // ☰ Menú Hoteles Nacionales
-WebUI.waitForElementClickable(findTestObject('Euromundo/hoteles/repository_hoteles_inter/menu_hoteles'), 10)
-WebUI.mouseOver(findTestObject('Euromundo/hoteles/repository_hoteles_inter/menu_hoteles'))
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_nal/select_hoteles_nal'))
+WebUI.waitForElementClickable(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/menu_hoteles'), 10)
+WebUI.mouseOver(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/menu_hoteles'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_nal/select_hoteles_nal'))
 
 
 // 🍪 Cierre de cookies
@@ -39,10 +39,10 @@ WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
 
 
 // 🌍 Selección de destino
-WebUI.waitForElementClickable(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_destination_hoteles_inter'), 15)
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_destination_hoteles_inter'))
-WebUI.setText(findTestObject('Euromundo/hoteles/repository_hoteles_inter/set_zone_selector'), 'Mex')
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_nal/set_autocomplete_city_MEX'))
+WebUI.waitForElementClickable(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_destination_hoteles_inter'), 15)
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_destination_hoteles_inter'))
+WebUI.setText(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/set_zone_selector'), 'Mex')
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_nal/set_autocomplete_city_MEX'))
 
 
 // 📅 Selección de fechas

@@ -30,48 +30,50 @@ WebUI.callTestCase(findTestCase('Euromundo/Login/Login_otn'), [:], FailureHandli
 // 📍 Selección de origen y destino
 WebUI.waitForElementClickable(findTestObject('Euromundo/gran_deal/repository_GD_nal/input_Destination'), 20)
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
-
 WebUI.selectOptionByValue(findTestObject('Euromundo/gran_deal/repository_GD_nal/input_Destination'), '35163', true) // Cancun
-WebUI.selectOptionByValue(findTestObject('Euromundo/gran_deal/repository_GD_nal/input_Origin'), '174008', true) // CDMX
+WebUI.selectOptionByValue(findTestObject('Euromundo/gran_deal/repository_GD_nal/input_Origin'), '35908', true) // CDMX
 
 // 📅 Fecha
 CustomKeywords.'utils.FechaUtils.setFechaAleatoriaDesdeTresMesesFuturo'('Euromundo/gran_deal/repository_GD_nal/origin_Date')
 
 // 👥 Selección de Pax
-WebUI.click(findTestObject('Euromundo/widget/set_RoomsPax'))
-WebUI.selectOptionByLabel(findTestObject('Euromundo/widget/set_Adults'), '2', true)
-WebUI.selectOptionByLabel(findTestObject('Euromundo/widget/set_Chds'), '0', true)
-WebUI.selectOptionByLabel(findTestObject('Euromundo/widget/set_Infs'), '0', true)
+CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/widget/set_rooms_pax'))
+int habitaciones = 1
+List<Integer> adultos = [2]
+List<Integer> ninos = [0]
+List<Integer> infantes = [0]
+List<Integer> edadesNinos = []
+List<Integer> edadesInfantes = []
 
-// 🔍 Buscar
+CustomKeywords.'utils.configuration_rooms.configurarHabitacionesYPasajeros'(
+	habitaciones, adultos, ninos, infantes, edadesNinos, edadesInfantes)
+
+// 🧒 Capturar edad del niño
+TestObject objEdadNino = new TestObject('edad_nino')
+objEdadNino.addProperty('xpath', ConditionType.EQUALS, '//*[@id="select2-room-selector-1-children-age-1-1-container"]')
+String edadNinoTexto = WebUI.getText(objEdadNino).replaceAll("\\D", "") // elimina letras y deja números
+int edadNino = edadNinoTexto.isInteger() ? edadNinoTexto.toInteger() : 5
+
+// 👶 Capturar edad del infante
+TestObject objEdadInf = new TestObject('edad_infante')
+objEdadInf.addProperty('xpath', ConditionType.EQUALS, '//*[@id="select2-room-selector-1-babies-age-1-1-container"]')
+String edadInfTexto = WebUI.getText(objEdadInf).replaceAll("\\D", "")
+int edadInf = edadInfTexto.isInteger() ? edadInfTexto.toInteger() : 0
+WebUI.comment("📌 Edad Niño capturada: $edadNino")
+WebUI.comment("📌 Edad Infante capturada: $edadInf")
+
 WebUI.click(findTestObject('Euromundo/gran_deal/repository_GD_nal/button_Search_GD'))
 
 // 🏨 Selección hotel
-WebUI.click(findTestObject('Euromundo/book_steps/button_prebook_gd'))
+CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'))
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_prebook'), 10)
 WebUI.scrollToElement(findTestObject('Euromundo/book_steps/button_prebook'), 10)
-WebUI.click(findTestObject('Euromundo/book_steps/button_prebook'))
+CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_steps/button_prebook'))
 
 // 👤 Datos de pasajeros
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_finalization_prebook'), 10)
-
-// Pax 1
-WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax1_extended'), 'MR', false)
-WebUI.setText(findTestObject('Euromundo/pax_page/input_name_extended1_pax1'), 'Juan Daniel')
-WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_extended_pax1'), 'Gomez')
-WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax1_extended'), '25/10/1990')
-WebUI.setText(findTestObject('Euromundo/pax_page/set_document_extended1_pax1'), '1232434')
-WebUI.setText(findTestObject('Euromundo/pax_page/set_expiration_document_extended_pax1'), '21/09/2031')
-
-// Pax 2
-WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax2_extended'), 'MRS', true)
-WebUI.setText(findTestObject('Euromundo/pax_page/input_name_extended1_pax2'), 'Johana')
-WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_extended_pax2'), 'Gomez')
-WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax2_extended'), '18/09/1995')
-WebUI.setText(findTestObject('Euromundo/pax_page/set_document_extended1_pax2'), '43534234')
-WebUI.setText(findTestObject('Euromundo/pax_page/set_expiration_document_extended_pax2'), '21/09/2031')
-
-WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_prebook'))
+CustomKeywords.'utils.PassengerFormHelper.fillPassengerData'([edadNino], [edadInf])
+CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_steps/button_finalization_prebook'))
 
 // 👤 Selección responsable
 TestObject paxSelect = new TestObject('dynamicPaxSelect')

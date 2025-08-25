@@ -27,45 +27,19 @@ import com.kms.katalon.core.testobject.ConditionType as ConditionType
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_mxn'), [:], FailureHandling.STOP_ON_FAILURE)
 
 // ☰ Menú Circuitos Nacionales
-WebUI.waitForElementClickable(findTestObject('Euromundo/circuitos/repositpory_circuitos_inter/menu_circuitos'), 10)
-
-WebUI.mouseOver(findTestObject('Euromundo/circuitos/repositpory_circuitos_inter/menu_circuitos'))
-
+WebUI.waitForElementClickable(findTestObject('Euromundo/circuitos/repository_circuitos_inter/menu_circuitos'), 10)
+WebUI.mouseOver(findTestObject('Euromundo/circuitos/repository_circuitos_inter/menu_circuitos'))
 WebUI.click(findTestObject('Euromundo/circuitos/repository_circuitos_nal/select_circuitos_nal'))
 
 // 📍 Origen y destino
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/input_destination_inter'), 15)
-
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
-
 WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/input_destination_inter'), '185205', true)
-
-// 📅 Fecha
-CustomKeywords.'utils.FechaUtils.setFechaLunesEnTresMeses'('Euromundo/book_steps/origin_date_inter')
+CustomKeywords.'utils.FechaUtils.setFechaLunesEnTresMeses'('Euromundo/book_steps/origin_date_inter') // 📅 Fecha
 
 // 🔍 Buscar
 WebUI.click(findTestObject('Euromundo/book_steps/button_search_inter'))
 
-// 🔎 Validación si aparece botón "Volver"
-if (WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_comeback'), 5, FailureHandling.OPTIONAL)) {
-	WebUI.comment('⚠️ No se encontraron resultados. Se procede a volver y editar búsqueda...')
-
-	// Clic en el botón "volver"
-	WebUI.click(findTestObject('Euromundo/book_steps/button_comeback'))
-
-	// Esperar y dar clic en el botón "Editar"
-	WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_edit'), 10)
-
-	WebUI.click(findTestObject('Euromundo/book_steps/button_edit'))
-
-	// Setear nueva fecha aleatoria desde tres meses en el futuro
-	CustomKeywords.'utils.FechaUtils.setFechaLunesEnTresMeses'('Euromundo/book_steps/origin_date_inter')
-
-	// Clic en botón buscar nuevamente
-	WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_search_inter'), 10)
-
-	WebUI.click(findTestObject('Euromundo/book_steps/button_search_inter'))
-}
 
 // 🏨 Verificar disponibilidad
 boolean hotelVisible = WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook'), 10, FailureHandling.OPTIONAL)
@@ -74,19 +48,14 @@ if (!(hotelVisible)) {
     WebUI.comment('🔄 No se cargó a la primera. Reintentando...')
 
     WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_edit'), 10)
-
     WebUI.click(findTestObject('Euromundo/book_steps/button_edit'))
-
     WebUI.click(findTestObject('Euromundo/book_steps/button_search_inter'))
-
     WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook'), 10)
 }
 
 // ✅ Prebook
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_prebook'), 10)
-
 WebUI.click(findTestObject('Euromundo/book_steps/button_prebook'))
-
 WebUI.click(findTestObject('Euromundo/book_steps/button_prebook'))
 
 // 👥 Pasajeros

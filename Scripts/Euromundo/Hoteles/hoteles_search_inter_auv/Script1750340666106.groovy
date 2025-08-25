@@ -24,20 +24,20 @@ import com.kms.katalon.core.testobject.ConditionType as ConditionType
 
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_auv'), [:], FailureHandling.STOP_ON_FAILURE)
 
-WebUI.waitForElementClickable(findTestObject('Euromundo/hoteles/repository_hoteles_inter/menu_hoteles'), 10)
+WebUI.waitForElementClickable(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/menu_hoteles'), 10)
 
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/menu_hoteles'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/menu_hoteles'))
 
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
 
-WebUI.waitForElementClickable(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_destination_hoteles_inter'), 
+WebUI.waitForElementClickable(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_destination_hoteles_inter'), 
     15)
 
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_destination_hoteles_inter'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_destination_hoteles_inter'))
 
-WebUI.setText(findTestObject('Euromundo/hoteles/repository_hoteles_inter/set_zone_selector'), 'Las')
+WebUI.setText(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/set_zone_selector'), 'Las')
 
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/set_autocomplete_city_LAS'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/set_autocomplete_city_LAS'))
 
 CustomKeywords.'utils.FechaUtils.setFechasIdaYRegreso'('Euromundo/hoteles/repository_hoteles_inter/input_date_origin_hoteles', 
     'Euromundo/hoteles/repository_hoteles_inter/input_date_destination_hoteles')

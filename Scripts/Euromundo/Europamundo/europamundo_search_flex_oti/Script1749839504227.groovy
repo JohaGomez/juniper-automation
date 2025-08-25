@@ -53,10 +53,10 @@ if (!(hotelVisible)) {
     WebUI.click(findTestObject('Euromundo/book_steps/button_search_inter'))
 
     // Paso 3d: Esperar nuevamente el select_hotel
-    WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook_gd'), 10)
+    WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'), 10)
 
     // Paso 3e: Hacer clic en el botón reservar hotel
-    WebUI.click(findTestObject('Euromundo/book_steps/button_prebook_gd'))
+    WebUI.click(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'))
 }
 
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/select_package'))
@@ -65,11 +65,11 @@ WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_
 
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_book'))
 
-WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europamundo/input_arrival_transfers_oti'), 'C2EE3F4E7262FE61CD0C3D39B8CA8A5A', 
+WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europamundo/input_arrival_transfers_oti'), '92F056258DEBDA2EADD45A914D39E750', 
     true)
 
 WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europamundo/input_departure_transfers_oti'), 
-    '96635C11AA7CBC69DC03854224814561', true)
+    '5CB06160CD9766F80330564F57D34026', true)
 
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/europamundo/repository_europamundo/button_quote2'))
 

@@ -6,11 +6,11 @@
    <elementGuidId>d1bc5201-3595-4f59-9890-059b01e2b299</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
-      </entry>
-      <entry>
          <key>XPATH</key>
          <value>//*[@id=&quot;package-searcher-_ctl1__ctl1__ctl1_pageBody_pageBody_searcher__ctl0_ctlDateSelector-start-date-input&quot;]</value>
+      </entry>
+      <entry>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

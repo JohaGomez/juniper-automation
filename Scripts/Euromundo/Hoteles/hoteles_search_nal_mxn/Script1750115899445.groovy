@@ -28,23 +28,23 @@ import com.kms.katalon.core.util.KeywordUtil as KeywordUtil
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_mxn'), [:], FailureHandling.STOP_ON_FAILURE)
 
 // ☰ Menú Hoteles Nacionales
-WebUI.waitForElementClickable(findTestObject('Euromundo/hoteles/repository_hoteles_inter/menu_hoteles'), 10)
-WebUI.mouseOver(findTestObject('Euromundo/hoteles/repository_hoteles_inter/menu_hoteles'))
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_nal/select_hoteles_nal_mxn'))
+WebUI.waitForElementClickable(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/menu_hoteles'), 10)
+WebUI.mouseOver(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/menu_hoteles'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_nal/select_hoteles_nal_mxn'))
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
 
 // 🌍 Selección destino
-WebUI.waitForElementClickable(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_destination_hoteles_inter'), 15)
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_destination_hoteles_inter'))
-WebUI.setText(findTestObject('Euromundo/hoteles/repository_hoteles_inter/set_zone_selector'), 'Mex')
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_nal/set_autocomplete_city_MEX'))
+WebUI.waitForElementClickable(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_destination_hoteles_inter'), 15)
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_destination_hoteles_inter'))
+WebUI.setText(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/set_zone_selector'), 'Mex')
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_nal/set_autocomplete_city_MEX'))
 
 // 📅 Fechas
 CustomKeywords.'utils.FechaUtils.setFechasIdaYRegreso'(
     'Euromundo/hoteles/repository_hoteles_inter/input_date_origin_hoteles',
     'Euromundo/hoteles/repository_hoteles_inter/input_date_destination_hoteles'
 )
-WebUI.click(findTestObject('Euromundo/hoteles/repository_hoteles_inter/input_date_destination_hoteles'))
+WebUI.click(findTestObject('Euromundo/módulo_hoteles/repository_hoteles_inter/input_date_destination_hoteles'))
 
 // 🔍 Buscar hoteles
 WebUI.click(findTestObject('Euromundo/book_steps/button_search_hotels'))

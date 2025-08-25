@@ -6,12 +6,14 @@
    <elementGuidId>7a3d2578-6df3-499b-90cf-4f94432f07b5</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
-         <value></value>
+         <key>XPATH</key>
+         <value>//label[contains(text(),'Debe de estar de acuerdo')]/preceding-sibling::input[@type='checkbox']&#xd;
+&#xd;
+&#xd;
+</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>//*[@id=&quot;checkBox1&quot;]</value>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

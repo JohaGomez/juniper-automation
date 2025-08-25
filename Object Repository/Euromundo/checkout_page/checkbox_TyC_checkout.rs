@@ -7,7 +7,8 @@
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//*[@id=&quot;termsAndConditions&quot;]</value>
+         <value>//label[contains(text(),'Términos') or contains(text(),'condiciones')]/preceding::input[@type='checkbox'][1]&#xd;
+</value>
       </entry>
       <entry>
          <key>BASIC</key>

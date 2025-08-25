@@ -20,9 +20,6 @@ import com.kms.katalon.core.testobject.ConditionType as ConditionType
 import com.kms.katalon.core.webui.common.WebUiCommonHelper as WebUiCommonHelper
 import org.openqa.selenium.support.ui.Select as Select
 import org.openqa.selenium.WebElement as WebElement
-import org.openqa.selenium.WebElement
-import org.openqa.selenium.support.ui.Select
-import com.kms.katalon.core.webui.common.WebUiCommonHelper
 
 // 🚪 Login
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_otn'), [:], FailureHandling.STOP_ON_FAILURE)
@@ -31,71 +28,81 @@ WebUI.callTestCase(findTestCase('Euromundo/Login/Login_otn'), [:], FailureHandli
 WebUI.waitForElementClickable(findTestObject('Euromundo/Gran_Deal/repository_GD_Inter/menu_gd'), 10)
 WebUI.mouseOver(findTestObject('Euromundo/Gran_Deal/repository_GD_Inter/menu_gd'))
 WebUI.click(findTestObject('Euromundo/Gran_Deal/repository_GD_Inter/select_international'))
-
-// 🔍 Búsqueda de hoteles
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_box'), 10)
 WebUI.click(findTestObject('Euromundo/book_steps/button_box'))
+
+// 🍪 Aceptar Cookies
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
 
+// 🔍 búsqueda
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/input_destination_inter'), 15)
-WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/input_destination_inter'), '184911', true)  // Destino
-WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/select_origin_inter'), '35908', true)       // Origen
+WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/input_destination_inter'), '35751', true) // Destino
+WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/select_origin_inter'), '35908', true) // Origen
+CustomKeywords.'utils.FechaUtils.setFechaViernesEnTresMeses'('Euromundo/book_steps/origin_date_inter') // Fecha
 
-CustomKeywords.'utils.FechaUtils.setFechaViernesEnTresMeses'('Euromundo/book_steps/origin_date_inter')
+// 👥 Selección de Pax
+CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/widget/set_rooms_pax_inter'))
+
+int habitaciones = 1
+List<Integer> adultos = [2]
+List<Integer> ninos = [0]
+List<Integer> infantes = [0]
+List<Integer> edadesNinos = []
+List<Integer> edadesInfantes = []
+CustomKeywords.'utils.configuration_rooms.configurarHabitacionesYPasajeros'(habitaciones, adultos, ninos, infantes, edadesNinos, 
+    edadesInfantes)
+
+// 🧒 Capturar edad del niño
+TestObject objEdadNino = new TestObject('edad_nino')
+objEdadNino.addProperty('xpath', ConditionType.EQUALS, '//*[@id="select2-room-selector-1-children-age-1-1-container"]')
+String edadNinoTexto = WebUI.getText(objEdadNino).replaceAll('\\D', '') // elimina letras y deja números
+int edadNino = edadNinoTexto.isInteger() ? edadNinoTexto.toInteger() : 5
+
+// 👶 Capturar edad del infante
+TestObject objEdadInf = new TestObject('edad_infante')
+objEdadInf.addProperty('xpath', ConditionType.EQUALS, '//*[@id="select2-room-selector-1-babies-age-1-1-container"]')
+String edadInfTexto = WebUI.getText(objEdadInf).replaceAll('\\D', '')
+int edadInf = edadInfTexto.isInteger() ? edadInfTexto.toInteger() : 0
+WebUI.comment("📌 Edad Niño capturada: $edadNino")
+WebUI.comment("📌 Edad Infante capturada: $edadInf")
 
 // Clic en botón de búsqueda
 WebUI.click(findTestObject('Euromundo/Gran_Deal/repository_GD_Inter/button_search_inter'))
 
 // 🏨 Esperar resultados o reintentar si no cargó
-if (!WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook_gd'), 10, FailureHandling.OPTIONAL)) {
+if (!(WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'), 10, FailureHandling.OPTIONAL))) {
     WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_edit'), 10)
     WebUI.click(findTestObject('Euromundo/book_steps/button_edit'))
     WebUI.click(findTestObject('Euromundo/book_steps/button_search_inter'))
-    WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook_gd'), 10)
+    WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'), 10)
 }
-WebUI.click(findTestObject('Euromundo/book_steps/button_prebook_gd'))
+WebUI.click(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'))
 
 // 👥 Datos de pasajeros
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_finalization_prebook'), 10)
-
-// Pax 1
-WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax1'), 'MR', false)
-WebUI.setText(findTestObject('Euromundo/pax_page/input_name_pax1'), 'Juan Daniel')
-WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_pax1'), 'Gomez')
-WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax1'), '25/10/1990')
-
-// Pax 2
-WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax2'), 'MRS', true)
-WebUI.setText(findTestObject('Euromundo/pax_page/input_name_pax2'), 'Johana')
-WebUI.setText(findTestObject('Euromundo/pax_page/input_surname_pax2'), 'Gomez')
-WebUI.setText(findTestObject('Euromundo/pax_page/input_birthday_pax2'), '18/09/1995')
-
+CustomKeywords.'utils.PassengerFormHelper.fillPassengerData'([edadNino], [edadInf])
 WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_prebook'))
 
 // 🔽 Selección de pasajero responsable
 TestObject paxDropdown = new TestObject('dynamicPaxSelect')
-paxDropdown.addProperty('xpath', ConditionType.EQUALS, "//select[contains(@class,'js-set-confirm-pax-data')]")
+paxDropdown.addProperty('xpath', ConditionType.EQUALS, '//select[contains(@class,\'js-set-confirm-pax-data\')]')
 WebElement selectElem = WebUiCommonHelper.findWebElement(paxDropdown, 10)
 new Select(selectElem).selectByIndex(1)
 
 // 🏠 Datos de contacto
 WebUI.setText(findTestObject('Euromundo/checkout_page/passport_booking_holder'), '102635')
-
 TestObject cityObj = new TestObject('dynamicCity')
-cityObj.addProperty('xpath', ConditionType.EQUALS, "//input[@name='holder_city']")
+cityObj.addProperty('xpath', ConditionType.EQUALS, '//input[@name=\'holder_city\']')
 WebUI.waitForElementVisible(cityObj, 10)
 WebUI.setText(cityObj, 'Bogota')
-
 TestObject zipObj = new TestObject('dynamicZip')
-zipObj.addProperty('xpath', ConditionType.EQUALS, "//input[@name='holder_zipcode']")
+zipObj.addProperty('xpath', ConditionType.EQUALS, '//input[@name=\'holder_zipcode\']')
 WebUI.waitForElementVisible(zipObj, 10)
 WebUI.setText(zipObj, '110111')
-
 TestObject addrObj = new TestObject('dynamicAddress')
-addrObj.addProperty('xpath', ConditionType.EQUALS, "//input[@name='holder_address']")
+addrObj.addProperty('xpath', ConditionType.EQUALS, '//input[@name=\'holder_address\']')
 WebUI.waitForElementVisible(addrObj, 10)
 WebUI.setText(addrObj, 'Virrey')
-
 WebUI.setText(findTestObject('Euromundo/checkout_page/phone_booking_holder'), '3218111877')
 
 // ✅ Aceptación de condiciones
@@ -107,18 +114,20 @@ WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_book'))
 
 // ❌ Cancelación de reserva
 WebUI.click(findTestObject('Euromundo/book_steps/button_cancel_book'))
+
 WebUI.waitForAlert(10)
+
 WebUI.acceptAlert()
 
 // 📢 Verificación de mensaje de cancelación
 TestObject alertCancel = new TestObject('dynamic/alertCancel')
-alertCancel.addProperty('xpath', ConditionType.EQUALS, "//p[contains(@class,'booking-details__status-text') and contains(text(),'Su reserva ha sido cancelada.')]")
-
+alertCancel.addProperty('xpath', ConditionType.EQUALS, '//p[contains(@class,\'booking-details__status-text\') and contains(text(),\'Su reserva ha sido cancelada.\')]')
 WebUI.waitForElementVisible(alertCancel, 10)
 WebUI.scrollToElement(findTestObject('Euromundo/book_steps/bookings'), 10)
-
 String actualText = WebUI.getText(alertCancel)
 WebUI.verifyMatch(actualText.trim(), 'Su reserva ha sido cancelada.', false, FailureHandling.STOP_ON_FAILURE)
-
 WebUI.comment('✅ El texto de cancelación se encontró correctamente.')
+
+// Cerrar navegador
+WebUI.closeBrowser()
 
