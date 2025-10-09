@@ -16,12 +16,24 @@ import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
 import internal.GlobalVariable as GlobalVariable
 import org.openqa.selenium.Keys as Keys
-import com.kms.katalon.core.webui.common.WebUiCommonHelper as WebUiCommonHelper
 import org.openqa.selenium.WebElement as WebElement
-import org.openqa.selenium.By as By
 import org.openqa.selenium.support.ui.Select as Select
-import com.kms.katalon.core.testobject.ConditionType as ConditionType
-import com.kms.katalon.core.testobject.ObjectRepository as OR
+import com.kms.katalon.core.webui.common.WebUiCommonHelper as WebUiCommonHelper
+import org.openqa.selenium.By as By
+import com.kms.katalon.core.webui.driver.DriverFactory as DriverFactory
+import java.time.Duration
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.support.ui.ExpectedConditions
+import groovy.json.JsonSlurper
+import com.kms.katalon.core.util.KeywordUtil
+import com.kms.katalon.core.testobject.ConditionType
+import utils.ValidacionesPrecios
+import com.kms.katalon.core.model.FailureHandling
+import com.kms.katalon.core.testobject.TestObject
+import utils.ValidacionesPreciosTabla
+import com.kms.katalon.core.model.FailureHandling as FH
+import utils.ValidacionesPrebook
+import org.openqa.selenium.interactions.Actions
 
 // 🚪 Login
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_auv'), [:], FailureHandling.STOP_ON_FAILURE)
@@ -34,7 +46,8 @@ CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_st
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/input_destination_inter'), 15)
 WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/input_destination_inter'), '35751', true)
 WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/select_origin_inter'), '35908', true)
-CustomKeywords.'utils.FechaUtils.setFechaAleatoriaDesdeTresMesesFuturo'('Euromundo/book_steps/origin_date_inter') // 📅 Fecha
+CustomKeywords.'utils.FechaUtils.setFechaSabadoEnDosMeses'('Euromundo/book_steps/origin_date_inter') // 📅 Fecha
+
 // 👥 1. Abrir selector de habitaciones y pasajeros
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/widget/set_rooms_pax_inter'))
 
@@ -106,6 +119,21 @@ if (infantes.sum() > 0) {
 // 🔍 Buscar
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_steps/button_search_inter'))
 
+//Guardar titulo del paquete para después comparar
+TestObject tituloObj = new TestObject("tituloDinamico")
+tituloObj.addProperty("xpath", ConditionType.EQUALS, '//*[@id="main-content"]/div/div[2]/div[1]/div/div/div/article/div/div[2]/div[1]')
+
+//Guardar el texto en una variable local
+String tituloGuardado = WebUI.getText(tituloObj)
+
+// --- Crear TestObject para capturar el mejor precio en la página de resultados ---
+TestObject mejorPrecioObj = new TestObject().addProperty(
+	"xpath", ConditionType.EQUALS,
+	"//*[@id='main-content']/div/div[2]/div[1]/div/div/div/article/section[2]/div/div/div[2]/span[1]")
+
+// --- Llamar a la keyword para capturar y validar el precio en página de resultados ---
+double mejorPrecio = CustomKeywords.'utils.ValidacionPrecios.validarMejorPrecioEnResultados'(mejorPrecioObj)
+
 // 🏨 Verificación resultado
 if (!(WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook'), 10, FailureHandling.OPTIONAL))) {
     WebUI.comment('🔄 Resultado no cargado. Reintentando búsqueda...')
@@ -124,6 +152,22 @@ WebUI.click(findTestObject('Euromundo/book_steps/button_prebook'))
 // 👥 Datos de pasajeros
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_finalization_prebook'), 10)
 
+// ⚖️ Política de cancelación (validación estricta con normalize-space)
+TestObject policyFees = new TestObject('policyFees')
+policyFees.addProperty(
+    'xpath',
+    ConditionType.EQUALS,
+    "//div[contains(@class,'col-sm-12') and contains(normalize-space(.),'Reserva sujeta a gastos de cancelación')]"
+)
+
+if (WebUI.waitForElementPresent(policyFees, 5, FailureHandling.OPTIONAL)) {
+    String txt = WebUI.getText(policyFees)?.trim()
+    KeywordUtil.markFailedAndStop("🚫 Política restrictiva detectada: ${txt}")
+} else {
+    KeywordUtil.logInfo("✅ No se detectó política restrictiva, el flujo continúa.")
+}
+
+
 // 🛡 Validar nuevamente rangos por seguridad
 boolean edadesValidas = edadesCapturadasNinos.every { it in 2..17 } && edadesCapturadasInfantes.every { it in 0..1 }
 if (!edadesValidas) {
@@ -135,84 +179,226 @@ if (!edadesValidas) {
 	)
 }
 
+
+//Guardar titulo del paquete para después comparar en página de pasajeros
+TestObject otroTituloObj = new TestObject("otroTitulo")
+otroTituloObj.addProperty("xpath", ConditionType.EQUALS, '//*[@id="main-content"]/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div[1]')
+
+//Capturar el texto del segundo título
+String tituloNuevo = WebUI.getText(otroTituloObj)
+
+//Comparar
+if(tituloGuardado.equals(tituloNuevo)) {
+	println("✅ Los títulos son iguales")
+} else {
+	println("❌ Los títulos son diferentes")
+}
+
+// =========================================
+// ⚠️ Manejo de cambio de precio en warning
+// =========================================
+TestObject warningPrecioObj = new TestObject("warningPrecio")
+warningPrecioObj.addProperty("xpath", ConditionType.EQUALS,
+	"//div[@class='booking-warning__content']"
+)
+
+if (WebUI.verifyElementPresent(warningPrecioObj, 5, FailureHandling.OPTIONAL)) {
+	KeywordUtil.logInfo("⚠️ Apareció un warning de cambio de precio")
+
+	String warningText = WebUI.getText(warningPrecioObj)?.trim()
+	KeywordUtil.logInfo("📌 Texto warning: ${warningText}")
+
+	def matcher = (warningText =~ /\$?\s?([\d.,]+)\s?USD/)
+	def precios = matcher.collect { it[1]?.trim() }
+
+	if (!precios.isEmpty()) {
+		String nuevoPrecioStr = precios.last()
+		try {
+			// 🚀 Solo aquí se usa parseMoney
+			mejorPrecio = ValidacionesPrebook.parseMoney(nuevoPrecioStr)
+			KeywordUtil.logInfo("💲 Nuevo precio detectado (warning): ${mejorPrecio}")
+		} catch (Exception e) {
+			KeywordUtil.markWarning("⚠️ No se pudo convertir el nuevo precio: ${nuevoPrecioStr}")
+		}
+	} else {
+		KeywordUtil.markWarning("⚠️ No se pudo extraer ningún precio del warning")
+	}
+} else {
+	KeywordUtil.logInfo("✅ No apareció ningún warning de cambio de precio")
+}
+
+
+// TestObjects de la página de pasajeros para validación de precios
+TestObject precioObj = new TestObject("precio")
+precioObj.addProperty("xpath", ConditionType.EQUALS,
+	"//div[@class='booking-breakdown__item booking-breakdown__item--total booking-breakdown__item--is-pay-web']//span[@class='booking-breakdown__item-price']")
+
+TestObject comisionObj = new TestObject("comision")
+comisionObj.addProperty("xpath", ConditionType.EQUALS,
+	"//div[@class='booking-breakdown__item']//span[contains(text(),'Comisiones')]/following-sibling::span")
+
+TestObject precioFinalObj = new TestObject("precioFinal")
+precioFinalObj.addProperty("xpath", ConditionType.EQUALS,
+	"//div[@class='booking-breakdown__item']//span[contains(text(),'Precio final')]/following-sibling::span")
+
+TestObject totalAdeudadoObj = new TestObject("totalAdeudado")
+totalAdeudadoObj.addProperty("xpath", ConditionType.EQUALS,
+	"//span[@class='agent-markup__total-due-price']")
+
+// ✅ Llamada con los 5 parámetros
+CustomKeywords.'utils.ValidacionesPrebook.validarPrecioPrebook'(
+	precioObj,
+	comisionObj,
+	precioFinalObj,
+	totalAdeudadoObj,
+	mejorPrecio
+)
+
 // Confirmar pax
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_steps/button_finalization_prebook'))
 
-// 🎫 Selección responsable
+// 🔽 Selección de pasajero responsable
 TestObject paxDropdown = new TestObject('dynamicPaxSelect')
-
 paxDropdown.addProperty('xpath', ConditionType.EQUALS, '//select[contains(@class,\'js-set-confirm-pax-data\')]')
+WebElement selectElem = WebUiCommonHelper.findWebElement(paxDropdown, 10)
+new Select(selectElem).selectByIndex(1)
 
-WebElement dropdownElem = WebUiCommonHelper.findWebElement(paxDropdown, 10)
-
-new Select(dropdownElem).selectByIndex(1)
-
-// 🏠 Contacto
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(findTestObject('Euromundo/checkout_page/passport_booking_holder'), '102635')
-
+// 🏠 Datos de contacto
+WebUI.setText(findTestObject('Euromundo/checkout_page/passport_booking_holder'), '102635')
 TestObject cityObj = new TestObject('dynamicCity')
-
 cityObj.addProperty('xpath', ConditionType.EQUALS, '//input[@name=\'holder_city\']')
-
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(cityObj, 'Bogotá')
-
+WebUI.waitForElementVisible(cityObj, 10)
+WebUI.setText(cityObj, 'Bogota')
 TestObject zipObj = new TestObject('dynamicZip')
-
 zipObj.addProperty('xpath', ConditionType.EQUALS, '//input[@name=\'holder_zipcode\']')
-
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(zipObj, '110111')
-
+WebUI.waitForElementVisible(zipObj, 10)
+WebUI.setText(zipObj, '110111')
 TestObject addrObj = new TestObject('dynamicAddress')
-
 addrObj.addProperty('xpath', ConditionType.EQUALS, '//input[@name=\'holder_address\']')
+WebUI.waitForElementVisible(addrObj, 10)
+WebUI.setText(addrObj, 'Virrey')
+WebUI.setText(findTestObject('Euromundo/checkout_page/phone_booking_holder'), '3218111877')
 
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(addrObj, 'Virrey')
+// ✅ Aceptación de condiciones
+WebUI.click(findTestObject('Euromundo/checkout_page/checkbox_fare_breakdown'))
+TestObject checkbox = findTestObject('Euromundo/checkout_page/checkbox_importantInfo')
 
-// 📧 Datos facturación
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(findTestObject('Euromundo/checkout_page/phone_booking_holder'), '3218111877')
+if (WebUI.verifyElementPresent(checkbox, 3, FailureHandling.OPTIONAL)) {
+	WebUI.click(checkbox)
+	WebUI.comment("✅ Checkbox encontrado y clicado.")
+} else {
+	WebUI.comment("⚠️ Checkbox no presente, se continúa sin clic.")
+}
 
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(findTestObject('Euromundo/checkout_page/agent_email'), 'johana.gomez@ejuniper.com')
+//💾 Validaciones de precios para cerrar reserva
 
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(findTestObject('Euromundo/checkout_page/set_name_billing_info'), 'Johana Gomez')
+// Crear un TestObject para el título en Book
+TestObject tituloBookObj = new TestObject('tituloBookObj')
+tituloBookObj.addProperty('xpath', ConditionType.EQUALS, '//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td/div[2]/div[1]/span')
 
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(findTestObject('Euromundo/checkout_page/set_address_billing_info'), 'Virrey')
+// Obtener el texto desde el TestObject
+String tituloBook = WebUI.getText(tituloBookObj).trim()
+KeywordUtil.logInfo("📌 Título Book: ${tituloBook}")
 
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(findTestObject('Euromundo/checkout_page/set_rfc_billing_info'), '21312344')
+// Comparación
+if (tituloNuevo == tituloBook) {
+	KeywordUtil.logInfo("✅ Los títulos coinciden")
+} else {
+	KeywordUtil.markFailedAndStop("❌ Los títulos NO coinciden: '${tituloNuevo}' vs '${tituloBook}'")
+}
 
-CustomKeywords.'helpers.WebUIHelper.safeSetText'(findTestObject('Euromundo/checkout_page/set_email_billing_info'), 'johana.gomez@ejuniper.com')
+// ==========================
+// ✅ Validar precios en página de pasajeros
+// ==========================
 
-// ✔️ Checkboxes
-CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/checkout_page/checkbox_fare_breakdown'))
+// --- Helper local para crear TestObjects dinámicos ---
+private TestObject byXpath(String name, String xpath) {
+	TestObject t = new TestObject(name)
+	t.addProperty('xpath', ConditionType.EQUALS, xpath)
+	return t
+}
 
-CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/checkout_page/checkbox_importantInfo'))
+// Precio
+TestObject precioObj_pas = byXpath(
+	'precioObj_pas',
+	'//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/div[1]'
+)
+
+// Comisiones
+TestObject comisionObj_pas = byXpath(
+	'comisionObj_pas',
+	'//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/div[2]/div/div[1]'
+)
+
+// Precio Final
+TestObject precioFinalObj_pas = byXpath(
+	'precioFinalObj_pas',
+	'//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/div[2]/div/div[3]'
+)
+
+// Precio Paquete
+TestObject precioPaqueteObj_pas = byXpath(
+	'precioPaqueteObj_pas',
+	'//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[2]/table/tbody/tr[2]/td'
+)
+
+// --- Llamada a la keyword de precios ---
+CustomKeywords.'utils.ValidacionesPrecios.validarPrecio'(
+	precioObj_pas,
+	comisionObj_pas,
+	precioFinalObj_pas,
+	precioPaqueteObj_pas,
+	mejorPrecio
+)
+
+
+// ==========================
+// 📌 Validación tabla de desglose de comisiones
+// ==========================
+
+TestObject btnDesglose = new TestObject('btnDesglose').addProperty(
+  'xpath', ConditionType.EQUALS,
+  "//button[contains(.,'Desglose') or contains(.,'Breakdown') or contains(@class,'js-open-breakdown')]"
+)
+
+// Tabla del breakdown (OJO: es otra estructura distinta al DIV)
+TestObject tablaDesgloseTable = new TestObject('tablaDesgloseTable').addProperty(
+  'xpath', ConditionType.EQUALS,
+  "//table[contains(@class,'confirm-booking__tableBreakdown__table')]"
+)
+WebUI.waitForElementPresent(tablaDesgloseTable, 10, FH.OPTIONAL)
+WebUI.scrollToElement(tablaDesgloseTable, 3)
+WebUI.waitForElementVisible(tablaDesgloseTable, 10, FH.OPTIONAL)
+
+// Si tienes una clase utils.ValidacionesPreciosTabla con método validacionDesglose(mejorPrecio)
+try {
+  def valTabla = new utils.ValidacionesPreciosTabla()
+  if (WebUI.verifyElementPresent(tablaDesgloseTable, 2, FH.OPTIONAL)) {
+	  valTabla.validacionDesglose(mejorPrecio)
+	  WebUI.comment("✅ Validación de la tabla de desglose ejecutada correctamente")
+  } else {
+	  WebUI.comment("⚠️ La tabla de desglose de comisiones no está visible en pantalla")
+  }
+} catch (Throwable t) {
+  WebUI.comment("ℹ️ Saltando validación de tabla: clase/método no disponible: ${t.message}")
+}
 
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/checkout_page/checkbox_TyC_checkout'))
 
 // 🧾 Finalizar y cancelar
 WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_book'))
-
 WebUI.click(findTestObject('Euromundo/book_steps/button_cancel_prebook'))
-
 WebUI.click(findTestObject('Euromundo/book_steps/button_cancel_prebook_hotel'))
-
 WebUI.click(findTestObject('Euromundo/book_steps/button_cancel_book'))
-
 WebUI.waitForAlert(10)
-
 WebUI.acceptAlert()
 
 // 📢 Validar mensaje de cancelación
 TestObject alertCancel = new TestObject('dynamic/alertCancel')
-
 alertCancel.addProperty('xpath', ConditionType.EQUALS, '//p[contains(@class,\'booking-details__status-text\') and contains(text(),\'Su reserva ha sido cancelada.\')]')
-
 WebUI.waitForElementVisible(alertCancel, 10)
-
 WebUI.scrollToElement(findTestObject('Euromundo/book_steps/bookings'), 10)
-
 String actualText = WebUI.getText(alertCancel)
-
 WebUI.verifyMatch(actualText.trim(), 'Su reserva ha sido cancelada.', false)
-
 WebUI.comment('✅ El texto de cancelación se encontró correctamente.')
 

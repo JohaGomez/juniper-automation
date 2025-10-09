@@ -7,7 +7,10 @@
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//label[contains(text(),'Términos') or contains(text(),'condiciones')]/preceding::input[@type='checkbox'][1]&#xd;
+         <value>//fieldset[contains(@class,'confirm-booking__policies-fields')]//input[@id='termsAndConditions'] &#xd;
+|&#xd;
+//input[@type='checkbox' and @id='termsAndConditions']&#xd;
+&#xd;
 </value>
       </entry>
       <entry>

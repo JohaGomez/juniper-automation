@@ -6,11 +6,11 @@
    <elementGuidId>5e8160d7-5a1d-4c6d-9baf-01ecf7bf63fb</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>XPATH</key>
-         <value>//a[@id='menu-option-international-packages']</value>
+         <key>BASIC</key>
       </entry>
       <entry>
-         <key>BASIC</key>
+         <key>XPATH</key>
+         <value>//*[@id=&quot;menu-option-international-packages&quot;]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

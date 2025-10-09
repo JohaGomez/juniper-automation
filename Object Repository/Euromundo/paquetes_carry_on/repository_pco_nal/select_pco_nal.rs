@@ -6,12 +6,12 @@
    <elementGuidId>a17b3bdb-2d41-4f92-bde5-7cd2fe504456</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
-         <value></value>
+         <key>XPATH</key>
+         <value>//*[@id='menu-option-national-packages']&#xd;
+</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>(//a[contains(text(),'Nacional')])[3]</value>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

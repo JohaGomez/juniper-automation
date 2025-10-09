@@ -6,12 +6,14 @@
    <elementGuidId>3fbf7c04-16d2-400a-9f26-1dc88d82bca1</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
-         <value></value>
+         <key>XPATH</key>
+         <value>//a[@id='menu-option-packagesDcp']/following::ul[1]//a[normalize-space(text())='Internacional']&#xd;
+&#xd;
+&#xd;
+</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>(//a[contains(text(),'Internacional')])[3]</value>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

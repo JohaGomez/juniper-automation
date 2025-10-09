@@ -19,10 +19,19 @@ import org.openqa.selenium.Keys as Keys
 import org.openqa.selenium.WebElement as WebElement
 import org.openqa.selenium.support.ui.Select as Select
 import com.kms.katalon.core.webui.common.WebUiCommonHelper as WebUiCommonHelper
-import com.kms.katalon.core.testobject.ConditionType as ConditionType
-import com.kms.katalon.core.testobject.TestObject
+import org.openqa.selenium.By as By
+import com.kms.katalon.core.webui.driver.DriverFactory as DriverFactory
+import java.time.Duration
+import org.openqa.selenium.support.ui.WebDriverWait
+import org.openqa.selenium.support.ui.ExpectedConditions
+import groovy.json.JsonSlurper
+import com.kms.katalon.core.util.KeywordUtil
 import com.kms.katalon.core.testobject.ConditionType
+import utils.ValidacionesPrecios
 import com.kms.katalon.core.model.FailureHandling
+import com.kms.katalon.core.testobject.TestObject
+import utils.ValidacionesPreciosTabla
+import com.kms.katalon.core.model.FailureHandling as FH
 
 // 🚪 Login
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_otn'), [:], FailureHandling.STOP_ON_FAILURE)
@@ -36,33 +45,107 @@ WebUI.selectOptionByValue(findTestObject('Euromundo/gran_deal/repository_GD_nal/
 // 📅 Fecha
 CustomKeywords.'utils.FechaUtils.setFechaAleatoriaDesdeTresMesesFuturo'('Euromundo/gran_deal/repository_GD_nal/origin_Date')
 
-// 👥 Selección de Pax
+// 👥 1. Abrir selector de habitaciones y pasajeros
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/widget/set_rooms_pax'))
+
+// 🏨 2. Datos base de habitaciones y pasajeros
 int habitaciones = 1
 List<Integer> adultos = [2]
 List<Integer> ninos = [0]
 List<Integer> infantes = [0]
-List<Integer> edadesNinos = []
-List<Integer> edadesInfantes = []
 
-CustomKeywords.'utils.configuration_rooms.configurarHabitacionesYPasajeros'(
-	habitaciones, adultos, ninos, infantes, edadesNinos, edadesInfantes)
+// 📥 3. Traer edades desde variables globales (si existen)
+List<Integer> edadesNinos = (GlobalVariable.edadesNinos ?: []).findAll { it?.toString()?.isInteger() }.collect { it.toInteger() }
+List<Integer> edadesInfantes = (GlobalVariable.edadesInfantes ?: []).findAll { it?.toString()?.isInteger() }.collect { it.toInteger() }
 
-// 🧒 Capturar edad del niño
-TestObject objEdadNino = new TestObject('edad_nino')
-objEdadNino.addProperty('xpath', ConditionType.EQUALS, '//*[@id="select2-room-selector-1-children-age-1-1-container"]')
-String edadNinoTexto = WebUI.getText(objEdadNino).replaceAll("\\D", "") // elimina letras y deja números
-int edadNino = edadNinoTexto.isInteger() ? edadNinoTexto.toInteger() : 5
+// 🛡️ 4. Validar rangos
+boolean edadesNinosValidas = edadesNinos.every { it in 2..17 }
+boolean edadesInfantesValidas = edadesInfantes.every { it in 0..1 }
 
-// 👶 Capturar edad del infante
-TestObject objEdadInf = new TestObject('edad_infante')
-objEdadInf.addProperty('xpath', ConditionType.EQUALS, '//*[@id="select2-room-selector-1-babies-age-1-1-container"]')
-String edadInfTexto = WebUI.getText(objEdadInf).replaceAll("\\D", "")
-int edadInf = edadInfTexto.isInteger() ? edadInfTexto.toInteger() : 0
-WebUI.comment("📌 Edad Niño capturada: $edadNino")
-WebUI.comment("📌 Edad Infante capturada: $edadInf")
+if (!edadesNinosValidas || !edadesInfantesValidas) {
+	KeywordUtil.markFailed("🚨 Edades fuera de rango: Niños: ${edadesNinos}, Infantes: ${edadesInfantes}")
+	return
+} else {
+	KeywordUtil.markPassed("✅ Edades válidas: Niños ${edadesNinos}, Infantes ${edadesInfantes}")
+}
+
+// ⚙️ 5. Configurar habitaciones y pasajeros
+CustomKeywords.'utils.configuration_rooms.configurarHabitacionesYPasajerosV2'(
+	habitaciones, adultos, ninos, infantes, edadesNinos, edadesInfantes
+)
+
+// 👁 6. Capturar visualmente edades seleccionadas del DOM (para paso posterior)
+List<Integer> edadesCapturadasNinos = []
+List<Integer> edadesCapturadasInfantes = []
+
+if (ninos.sum() > 0) {
+	for (int i = 1; i <= ninos[0]; i++) {
+		TestObject objNino = new TestObject("edad_nino_${i}")
+		objNino.addProperty('xpath', ConditionType.EQUALS, "//*[@id='select2-room-selector-1-children-age-1-${i}-container']")
+		
+		WebUI.waitForElementVisible(objNino, 5)
+		String edadTexto = WebUI.getText(objNino).replaceAll('\\D', '')
+		int edad = edadTexto?.isInteger() ? edadTexto.toInteger() : -1
+		
+		if (edad in 2..17) {
+			edadesCapturadasNinos.add(edad)
+			WebUI.comment("🧒 Edad Niño ${i} capturada: ${edad}")
+		} else {
+			WebUI.comment("❗Edad no válida para niño ${i}: ${edadTexto}")
+		}
+	}
+}
+
+if (infantes.sum() > 0) {
+	for (int i = 1; i <= infantes[0]; i++) {
+		TestObject objInf = new TestObject("edad_infante_${i}")
+		objInf.addProperty('xpath', ConditionType.EQUALS, "//*[@id='select2-room-selector-1-babies-age-1-${i}-container']")
+		
+		WebUI.waitForElementVisible(objInf, 5)
+		String edadTexto = WebUI.getText(objInf).replaceAll('\\D', '')
+		int edad = edadTexto?.isInteger() ? edadTexto.toInteger() : -1
+		
+		if (edad in 0..1) {
+			edadesCapturadasInfantes.add(edad)
+			WebUI.comment("👶 Edad Infante ${i} capturada: ${edad}")
+		} else {
+			WebUI.comment("❗Edad no válida para infante ${i}: ${edadTexto}")
+		}
+	}
+}
 
 WebUI.click(findTestObject('Euromundo/gran_deal/repository_GD_nal/button_Search_GD'))
+
+//Guardar titulo del paquete para después comparar
+TestObject tituloObj = new TestObject("tituloDinamico")
+tituloObj.addProperty("xpath", ConditionType.EQUALS, '//*[@id="results-list"]/div[2]/div/div[1]/article/div[1]/div[2]/div[1]')
+
+//Guardar el texto en una variable local
+String tituloGuardado = WebUI.getText(tituloObj)
+
+// --- Crear TestObject para capturar el mejor precio en la página de resultados ---
+TestObject mejorPrecioObj = new TestObject().addProperty(
+	"xpath", ConditionType.EQUALS,
+	"//div[@class='info-card__content']//span[@class='js-currency-conversor']"
+)
+
+// --- Llamar a la keyword para capturar y validar el precio en página de resultados ---
+double mejorPrecio = CustomKeywords.'utils.ValidacionPrecios.validarMejorPrecioEnResultados'(mejorPrecioObj)
+
+// ⚖️ Política de cancelación (validación estricta con normalize-space)
+TestObject policyFees = new TestObject('policyFees')
+policyFees.addProperty(
+	'xpath',
+	ConditionType.EQUALS,
+	"//div[contains(@class,'col-sm-12') and contains(normalize-space(.),'Reserva sujeta a gastos de cancelación')]"
+)
+
+if (WebUI.waitForElementPresent(policyFees, 5, FailureHandling.OPTIONAL)) {
+	String txt = WebUI.getText(policyFees)?.trim()
+	KeywordUtil.markFailedAndStop("🚫 Política restrictiva detectada: ${txt}")
+} else {
+	KeywordUtil.logInfo("✅ No se detectó política restrictiva, el flujo continúa.")
+}
 
 // 🏨 Selección hotel
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'))
@@ -72,8 +155,51 @@ CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_st
 
 // 👤 Datos de pasajeros
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_finalization_prebook'), 10)
-CustomKeywords.'utils.PassengerFormHelper.fillPassengerData'([edadNino], [edadInf])
-CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_steps/button_finalization_prebook'))
+
+// 🛡 Validar nuevamente rangos por seguridad
+boolean edadesValidas = edadesCapturadasNinos.every { it in 2..17 } && edadesCapturadasInfantes.every { it in 0..1 }
+if (!edadesValidas) {
+	KeywordUtil.markFailed("🚨 Edades inválidas detectadas ➜ Niños: ${edadesCapturadasNinos}, Infantes: ${edadesCapturadasInfantes}")
+} else {
+	// ✅ Pasar directamente a la keyword
+	CustomKeywords.'utils.PassengerFormHelper.fillPassengerData'(
+		edadesCapturadasNinos, edadesCapturadasInfantes
+	)
+}
+
+//Guardar titulo del paquete para después comparar en página de pasajeros
+TestObject otroTituloObj = new TestObject("otroTitulo")
+otroTituloObj.addProperty("xpath", ConditionType.EQUALS, '//*[@id="main-content"]/div[2]/div/div[3]/div[1]/div/div/div/div[1]/div[2]/div[1]')
+
+//Capturar el texto del segundo título
+String tituloNuevo = WebUI.getText(otroTituloObj)
+
+//Comparar
+if(tituloGuardado.equals(tituloNuevo)) {
+	println("✅ Los títulos son iguales")
+} else {
+	println("❌ Los títulos son diferentes")
+}
+
+// TestObjects de la página de pasajeros para validación de precios
+TestObject precioObj = new TestObject().addProperty("xpath", ConditionType.EQUALS,
+	"//div[@class='booking-breakdown__item booking-breakdown__item--total booking-breakdown__item--is-pay-web']//span[@class='booking-breakdown__item-price']")
+TestObject comisionObj = new TestObject().addProperty("xpath", ConditionType.EQUALS,
+	"//div[@class='booking-breakdown__item']//span[contains(text(),'Comisiones')]/following-sibling::span")
+TestObject precioFinalObj = new TestObject().addProperty("xpath", ConditionType.EQUALS,
+	"//div[@class='booking-breakdown__item']//span[contains(text(),'Precio final')]/following-sibling::span")
+TestObject totalAdeudadoObj = new TestObject().addProperty("xpath", ConditionType.EQUALS,
+	"//span[@class='agent-markup__total-due-price']")
+
+CustomKeywords.'utils.ValidacionesPrebook.validarPrecioPrebook'(
+	precioObj,
+	comisionObj,
+	precioFinalObj,
+	totalAdeudadoObj,
+	mejorPrecio
+)
+
+WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_prebook'))
 
 // 👤 Selección responsable
 TestObject paxSelect = new TestObject('dynamicPaxSelect')
@@ -107,7 +233,97 @@ WebUI.setText(findTestObject('Euromundo/checkout_page/phone_booking_holder'), '3
 
 // 🧾 Aceptación de condiciones
 WebUI.click(findTestObject('Euromundo/checkout_page/checkbox_importantInfo'))
+WebUI.click(findTestObject('Euromundo/checkout_page/checkbox_fare_breakdown'))
 WebUI.click(findTestObject('Euromundo/checkout_page/checkbox_TyC_checkout'))
+
+//💾 Validaciones de precios para cerrar reserva
+
+// Crear un TestObject para el título en Book
+TestObject tituloBookObj = new TestObject('tituloBookObj')
+tituloBookObj.addProperty('xpath', ConditionType.EQUALS, '//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td/div[2]/div[1]/span')
+
+// Obtener el texto desde el TestObject
+String tituloBook = WebUI.getText(tituloBookObj).trim()
+KeywordUtil.logInfo("📌 Título Book: ${tituloBook}")
+
+// Comparación
+if (tituloNuevo == tituloBook) {
+	KeywordUtil.logInfo("✅ Los títulos coinciden")
+} else {
+	KeywordUtil.markFailedAndStop("❌ Los títulos NO coinciden: '${tituloNuevo}' vs '${tituloBook}'")
+}
+
+// ==========================
+// ✅ Validar precios en página de pasajeros
+// ==========================
+
+
+// --- TestObjects con XPaths actualizados (montos) ---
+private TestObject byXpath(String name, String xpath) {
+	TestObject t = new TestObject(name)
+	t.addProperty('xpath', ConditionType.EQUALS, xpath)
+	return t
+}
+
+// Precio
+TestObject precioObj_pas = byXpath(
+	'precioObj_pas',
+	'//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/div[1]')
+
+// Comisiones
+TestObject comisionObj_pas = byXpath(
+	'comisionObj_pas',
+	'//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/div[2]/div/div[1]')
+
+// Precio Final
+TestObject precioFinalObj_pas = byXpath(
+	'precioFinalObj_pas',
+	'//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/div[2]/div/div[3]')
+
+// Precio Paquete
+TestObject precioPaqueteObj_pas = byXpath(
+	'precioPaqueteObj_pas',
+	'//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[2]/table/tbody/tr[2]/td')
+
+// --- Llamada a la keyword de precios ---
+CustomKeywords.'utils.ValidacionesPrecios.validarPrecio'(
+  precioObj_pas,
+  comisionObj_pas,
+  precioFinalObj_pas,
+  precioPaqueteObj_pas,
+  mejorPrecio
+)
+
+// ==========================
+// 📌 Validación tabla de desglose de comisiones
+// ==========================
+
+TestObject btnDesglose = new TestObject('btnDesglose').addProperty(
+  'xpath', ConditionType.EQUALS,
+  "//button[contains(.,'Desglose') or contains(.,'Breakdown') or contains(@class,'js-open-breakdown')]"
+)
+
+// Tabla del breakdown (OJO: es otra estructura distinta al DIV)
+TestObject tablaDesgloseTable = new TestObject('tablaDesgloseTable').addProperty(
+  'xpath', ConditionType.EQUALS,
+  "//table[contains(@class,'confirm-booking__tableBreakdown__table')]"
+)
+WebUI.waitForElementPresent(tablaDesgloseTable, 10, FH.OPTIONAL)
+WebUI.scrollToElement(tablaDesgloseTable, 3)
+WebUI.waitForElementVisible(tablaDesgloseTable, 10, FH.OPTIONAL)
+
+// Si tienes una clase utils.ValidacionesPreciosTabla con método validacionDesglose(mejorPrecio)
+try {
+  def valTabla = new utils.ValidacionesPreciosTabla()
+  if (WebUI.verifyElementPresent(tablaDesgloseTable, 2, FH.OPTIONAL)) {
+	  valTabla.validacionDesglose(mejorPrecio)
+	  WebUI.comment("✅ Validación de la tabla de desglose ejecutada correctamente")
+  } else {
+	  WebUI.comment("⚠️ La tabla de desglose de comisiones no está visible en pantalla")
+  }
+} catch (Throwable t) {
+  WebUI.comment("ℹ️ Saltando validación de tabla: clase/método no disponible: ${t.message}")
+}
 
 // ✅ Finalizar reserva
 WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_book'))

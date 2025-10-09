@@ -6,11 +6,11 @@
    <elementGuidId>523c65f3-df1c-4fc1-9752-b98b47f75c9c</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>XPATH</key>
-         <value>//*[@id=&quot;room-selector-1-room-selector-nrooms&quot;]</value>
+         <key>BASIC</key>
       </entry>
       <entry>
-         <key>BASIC</key>
+         <key>XPATH</key>
+         <value>//*[@id=&quot;room-selector-1-room-selector-nrooms&quot;]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

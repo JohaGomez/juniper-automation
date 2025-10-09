@@ -6,12 +6,12 @@
    <elementGuidId>2ab944e1-ef08-45c6-bb11-e8b2f8087b37</elementGuidId>
    <selectorCollection>
       <entry>
-         <key>BASIC</key>
-         <value></value>
+         <key>XPATH</key>
+         <value>//a[normalize-space(text())='Paquetes Carry On']&#xd;
+</value>
       </entry>
       <entry>
-         <key>XPATH</key>
-         <value>//*[@id=&quot;menu-option-packagesPot&quot;]</value>
+         <key>BASIC</key>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

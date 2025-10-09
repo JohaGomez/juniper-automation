@@ -1,5 +1,4 @@
 package utils
-
 import static com.kms.katalon.core.checkpoint.CheckpointFactory.findCheckpoint
 import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
 import static com.kms.katalon.core.testdata.TestDataFactory.findTestData
@@ -25,6 +24,9 @@ import internal.GlobalVariable
 import com.kms.katalon.core.testobject.ConditionType
 import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.util.KeywordUtil
+import java.time.temporal.ChronoUnit
+import org.openqa.selenium.WebElement
+
 
 
 public class FechaUtils {
@@ -337,22 +339,36 @@ public class FechaUtils {
 	}
 
 	/**
-	 * ✅ Método 12:
-	 * Setea una fecha ALEATORIA dentro del mes que está a 6 meses desde hoy
+	 * ✅ Método 12 actualizado:
+	 * Selecciona sábado aleatorio en 2 meses
 	 */
 	@Keyword
-	def setFechaAleatoriaDesdeSeisMesesFuturo(String testObjectPath, String formato = "dd/MM/yyyy") {
-		LocalDate fechaMinima = LocalDate.now().plusMonths(6).withDayOfMonth(1) // primer día del mes 6 meses adelante
-		LocalDate fechaMaxima = fechaMinima.withDayOfMonth(fechaMinima.lengthOfMonth()) // último día de ese mes
+	def setFechaSabadoEnDosMeses(String testObjectPath, String formato = "dd/MM/yyyy") {
+		// Buscar sábados en el mes que corresponde a 2 meses desde hoy
+		LocalDate fechaInicio = LocalDate.now().plusMonths(2).withDayOfMonth(1)
+		LocalDate fechaFin = fechaInicio.withDayOfMonth(fechaInicio.lengthOfMonth())
 
-		int diasRango = (int) fechaMinima.until(fechaMaxima).getDays()
-		int diasAleatorios = new Random().nextInt(diasRango + 1)
+		List<LocalDate> sabadosDisponibles = []
 
-		LocalDate fechaAleatoria = fechaMinima.plusDays(diasAleatorios)
-		String fechaFormateada = fechaAleatoria.format(DateTimeFormatter.ofPattern(formato))
+		while (!fechaInicio.isAfter(fechaFin)) {
+			if (fechaInicio.getDayOfWeek().getValue() == 6) {
+				// 6 = SÁBADO
+				sabadosDisponibles.add(fechaInicio)
+			}
+			fechaInicio = fechaInicio.plusDays(1)
+		}
+
+		if (sabadosDisponibles.isEmpty()) {
+			WebUI.comment("⚠️ No se encontró ningún sábado en el mes indicado (2 meses desde hoy).")
+			return null
+		}
+
+		LocalDate fechaSeleccionada = sabadosDisponibles.get(new Random().nextInt(sabadosDisponibles.size()))
+		String fechaFormateada = fechaSeleccionada.format(DateTimeFormatter.ofPattern(formato))
 
 		WebUI.setText(OR.findTestObject(testObjectPath), fechaFormateada)
-		WebUI.comment("📅 Fecha aleatoria en el mes que está a 6 meses: " + fechaFormateada)
+		WebUI.comment("📅 Sábado aleatorio en 2 meses seteado: " + fechaFormateada)
+
 		return fechaFormateada
 	}
 }
