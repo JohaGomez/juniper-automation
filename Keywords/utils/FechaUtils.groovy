@@ -26,6 +26,7 @@ import com.kms.katalon.core.testobject.TestObjectProperty
 import com.kms.katalon.core.util.KeywordUtil
 import java.time.temporal.ChronoUnit
 import org.openqa.selenium.WebElement
+import com.kms.katalon.core.testobject.ObjectRepository
 
 
 
@@ -176,32 +177,66 @@ public class FechaUtils {
 		WebUI.comment("📅 Lunes aleatorio seteado: " + fechaFormateada)
 		return fechaFormateada
 	}
-
+	
 	/**
-	 * ✅ Método 6: Selecciona el primer día habilitado disponible en el calendario desplegado desde el input de fecha
-	 * @param inputPath: testObject del campo input de fecha
+	 * ✅ Método combinado:
+	 * - Si el elemento es un input, selecciona el primer día habilitado del calendario.
+	 * - Si el elemento es un <select>, elige automáticamente el mes siguiente al actual.
+	 * @param inputPath: testObject del campo input o select de fecha
 	 */
 	@Keyword
 	def seleccionarPrimerDiaDisponibleCalendario(String inputPath) {
-		TestObject inputFecha = findTestObject(inputPath)
+		TestObject inputFecha = ObjectRepository.findTestObject(inputPath)
+		WebElement elemento = WebUiCommonHelper.findWebElement(inputFecha, 10)
+		String tagName = elemento.getTagName()
 
-		// Abrir el calendario
-		WebUI.waitForElementVisible(inputFecha, 10)
-		WebUI.click(inputFecha)
+		// 🧭 1️⃣ Si es un SELECT (como el combo de meses)
+		if (tagName.equalsIgnoreCase("select")) {
+			WebUI.comment("🔽 Detectado elemento tipo <select>: seleccionando próximo mes disponible...")
 
-		// Crear selector dinámico para días habilitados
-		TestObject primerDiaDisponible = new TestObject("primerDiaDisponible")
-		primerDiaDisponible.addProperty("xpath", ConditionType.EQUALS, "(//a[contains(@class,'ui-state-default') and not(contains(@class,'ui-state-disabled'))])[1]")
+			// Calcular el siguiente mes
+			LocalDate hoy = LocalDate.now()
+			LocalDate mesSiguiente = hoy.plusMonths(1)
+			String valorMes = mesSiguiente.format(DateTimeFormatter.ofPattern("yyyy-MM"))
 
-		// Esperar y hacer clic
-		if (WebUI.waitForElementClickable(primerDiaDisponible, 10, FailureHandling.OPTIONAL)) {
-			WebUI.click(primerDiaDisponible)
-			WebUI.comment("✅ Primer día habilitado del calendario seleccionado.")
-		} else {
-			WebUI.comment("⚠️ No se encontró ningún día habilitado en el calendario.")
+			try {
+				WebUI.selectOptionByValue(inputFecha, valorMes, false)
+				WebUI.comment("✅ Seleccionado mes en combo: ${valorMes}")
+			} catch (Exception e) {
+				WebUI.comment("⚠️ No se encontró el valor ${valorMes} en el select: ${e.message}")
+			}
+
+			return
 		}
-	}
 
+		// 🧭 2️⃣ Si es un INPUT (calendario clásico)
+		if (tagName.equalsIgnoreCase("input")) {
+			WebUI.comment("📅 Detectado input: intentando abrir calendario y seleccionar primer día disponible...")
+
+			// Abrir el calendario
+			WebUI.waitForElementVisible(inputFecha, 10)
+			WebUI.click(inputFecha)
+
+			// Selector dinámico para días habilitados
+			TestObject primerDiaDisponible = new TestObject("primerDiaDisponible")
+			primerDiaDisponible.addProperty("xpath", ConditionType.EQUALS,
+					"(//a[contains(@class,'ui-state-default') and not(contains(@class,'ui-state-disabled'))])[1]")
+
+			// Esperar y hacer clic
+			if (WebUI.waitForElementClickable(primerDiaDisponible, 10)) {
+				WebUI.click(primerDiaDisponible)
+				WebUI.comment("✅ Primer día habilitado del calendario seleccionado correctamente.")
+			} else {
+				WebUI.comment("⚠️ No se encontró ningún día habilitado en el calendario.")
+			}
+
+			return
+		}
+
+		// 🚫 3️⃣ Si no es ni input ni select
+		WebUI.comment("⚠️ Tipo de elemento no reconocido (${tagName}), no se aplicó acción.")
+	}
+	
 
 	/**
 	 * ✅ Método 7 Hoteles:
@@ -371,4 +406,93 @@ public class FechaUtils {
 
 		return fechaFormateada
 	}
+
+	/**
+	 * ✅ Método 13 actualizado:
+	 * Selecciona una fecha aleatorio en 2 meses a futuro
+	 */
+	@Keyword
+	def setFechaAleatoriaEnDosMeses(String testObjectPath, String formato = "dd/MM/yyyy") {
+		// 🗓️ Definir el rango del mes dentro de dos meses
+		LocalDate fechaInicio = LocalDate.now().plusMonths(2).withDayOfMonth(1)
+		LocalDate fechaFin = fechaInicio.withDayOfMonth(fechaInicio.lengthOfMonth())
+
+		// 📅 Calcular la cantidad total de días del mes
+		long diasEnMes = fechaInicio.lengthOfMonth()
+
+		// 🎲 Elegir un día aleatorio entre 1 y el total de días del mes
+		int diaAleatorio = new Random().nextInt((int) diasEnMes) + 1
+
+		// 🧩 Crear la fecha final con ese día
+		LocalDate fechaSeleccionada = fechaInicio.withDayOfMonth(diaAleatorio)
+
+		// 🕓 Formatear la fecha
+		String fechaFormateada = fechaSeleccionada.format(DateTimeFormatter.ofPattern(formato))
+
+		// ✍️ Setear la fecha en el campo indicado
+		WebUI.setText(OR.findTestObject(testObjectPath), fechaFormateada)
+		WebUI.comment("📅 Fecha aleatoria en 2 meses seteada: " + fechaFormateada)
+
+		return fechaFormateada
+	}
+	
+	@Keyword
+	def setFechaAleatoriaUnMesFuturo(String testObjectPath, String formato = "dd/MM/yyyy") {
+		// ===============================
+		// 📅 1. Calcular fecha aleatoria 1 mes a futuro
+		// ===============================
+		LocalDate fechaMinima = LocalDate.now().plusMonths(1)
+		LocalDate fechaMaxima = fechaMinima.plusWeeks(4)
+		long diasRango = fechaMinima.until(fechaMaxima).getDays()
+		int diasAleatorios = new Random().nextInt((int)diasRango + 1)
+		LocalDate fechaAleatoria = fechaMinima.plusDays(diasAleatorios)
+		String fechaFormateada = fechaAleatoria.format(DateTimeFormatter.ofPattern(formato))
+
+		WebUI.comment("📅 Fecha aleatoria generada: ${fechaFormateada}")
+
+		// ===============================
+		// 🔍 2. Detectar tipo de elemento
+		// ===============================
+		TestObject obj = OR.findTestObject(testObjectPath)
+		WebElement elemento = WebUI.findWebElement(obj)
+		String tagName = elemento.getTagName()
+
+		// ===============================
+		// 🧭 3. Si es un <select> (ej. mes/año)
+		// ===============================
+		if (tagName.equalsIgnoreCase("select")) {
+			WebUI.comment("🔽 Detectado elemento tipo <select>. Seleccionando mes correspondiente...")
+
+			// Obtener año y mes de la fecha aleatoria
+			String valorOption = fechaAleatoria.format(DateTimeFormatter.ofPattern("yyyy-MM"))
+			WebUI.selectOptionByValue(obj, valorOption, false)
+			WebUI.comment("✅ Seleccionado valor del combo: ${valorOption}")
+
+			return fechaFormateada
+		}
+
+		// ===============================
+		// 🧩 4. Si es un <input> (editable o readonly)
+		// ===============================
+		if (tagName.equalsIgnoreCase("input")) {
+			try {
+				WebUI.comment("⌨️ Intentando ingresar fecha en input directamente...")
+				WebUI.setText(obj, fechaFormateada)
+			} catch (Exception e) {
+				WebUI.comment("⚠️ Campo no editable. Intentando por JavaScript...")
+				WebUI.executeJavaScript("arguments[0].removeAttribute('readonly'); arguments[0].setAttribute('value', arguments[1]); arguments[0].dispatchEvent(new Event('change', { bubbles: true }));", Arrays.asList(elemento, fechaFormateada))
+			}
+			WebUI.comment("✅ Fecha asignada en input: ${fechaFormateada}")
+			return fechaFormateada
+		}
+
+		// ===============================
+		// ❔ 5. Si no es ni input ni select
+		// ===============================
+		WebUI.comment("⚠️ Tipo de elemento no reconocido (${tagName}). No se aplicó acción.")
+		ret
+	}
+	
+	
+	
 }

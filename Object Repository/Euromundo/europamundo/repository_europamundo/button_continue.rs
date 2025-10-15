@@ -7,11 +7,11 @@
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>//*[@id=&quot;main-content&quot;]/div[2]/div/div[4]/div[2]/button</value>
+         <value>//button[contains(@class,'js-package-prebooking-next') and normalize-space()='Cotizar']&#xd;
+</value>
       </entry>
       <entry>
          <key>BASIC</key>
-         <value></value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>

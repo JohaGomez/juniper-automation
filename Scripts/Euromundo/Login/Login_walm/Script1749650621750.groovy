@@ -17,10 +17,16 @@ import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
 import internal.GlobalVariable as GlobalVariable
 import org.openqa.selenium.Keys as Keys
 
+// Define la URL que deseas usar en este test case
+String url = 'https://euromundowalm.juniper.es'
 'Abrir el sitio web para iniciar con el Login'
-WebUI.openBrowser('https://euromundowalm.juniper.es/')
+WebUI.openBrowser('https://euromundowalm.juniper.es')
 
 WebUI.maximizeWindow()
+
+// Obtener versión de DLL a partir de la URL definida
+String version = CustomKeywords.'utils.DLLUtils.getVersionDLL'(url)
+WebUI.comment("📦 Versión de DLL detectada: ${version}")
 
 'Ingresar Usuario'
 WebUI.setText(findTestObject('Euromundo/login/input_User'), GlobalVariable.username)

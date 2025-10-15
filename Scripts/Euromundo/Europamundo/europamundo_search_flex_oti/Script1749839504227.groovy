@@ -22,21 +22,38 @@ import org.openqa.selenium.By as By
 import org.openqa.selenium.support.ui.Select as Select
 import com.kms.katalon.core.testobject.ConditionType as ConditionType
 
+// 🚪 Login
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_oti'), [:], FailureHandling.STOP_ON_FAILURE)
 
+// ☰ Menú
 WebUI.waitForElementClickable(findTestObject('Euromundo/europamundo/repository_europamundo/menu_europamundo'), 10)
-
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/menu_europamundo'))
 
+// 🍪 Aceptar Cookies
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
 
+// 🔍 búsqueda
 WebUI.waitForElementClickable(findTestObject('Euromundo/europamundo/repository_europamundo/input_city'), 15)
-
 WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europamundo/input_city'), '29476', true)
-
-CustomKeywords.'utils.FechaUtils.selectMesAleatorioDesdeTresMesesFuturo'('Euromundo/europamundo/repository_europamundo/input_date_package')
-
+CustomKeywords.'utils.FechaUtils.seleccionarPrimerDiaDisponibleCalendario'('Euromundo/europamundo/repository_europamundo/input_date_package')
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_search_package'))
+
+//Guardar titulo del paquete para después comparar
+TestObject tituloObj = new TestObject("tituloDinamico")
+tituloObj.addProperty("xpath", ConditionType.EQUALS, '//*[@id="results-list"]/div[2]/div/div[1]/article/div[1]/div[2]/div[1]')
+
+//Guardar el texto en una variable local
+String tituloGuardado = WebUI.getText(tituloObj)
+
+// --- Crear TestObject para capturar el mejor precio en la página de resultados ---
+TestObject mejorPrecioObj = new TestObject().addProperty(
+	"xpath", ConditionType.EQUALS,
+	"//div[@class='info-card__content']//span[@class='js-currency-conversor']"
+)
+
+// --- Llamar a la keyword para capturar y validar el precio en página de resultados ---
+double mejorPrecio = CustomKeywords.'utils.ValidacionPrecios.validarMejorPrecioEnResultados'(mejorPrecioObj)
+
 
 // Paso 2: Esperar hasta 10 segundos por el elemento select_hotel
 boolean hotelVisible = WebUI.waitForElementVisible(findTestObject('Euromundo/europamundo/repository_europamundo/select_package'), 
@@ -45,16 +62,12 @@ boolean hotelVisible = WebUI.waitForElementVisible(findTestObject('Euromundo/eur
 if (!(hotelVisible)) {
     // Paso 3a: Esperar que aparezca el botón editar
     WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_edit'), 10)
-
     // Paso 3b: Hacer clic en el botón editar
     WebUI.click(findTestObject('Euromundo/book_steps/button_edit'))
-
     // Paso 3c: Hacer clic en el botón buscar
     WebUI.click(findTestObject('Euromundo/book_steps/button_search_inter'))
-
     // Paso 3d: Esperar nuevamente el select_hotel
     WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'), 10)
-
     // Paso 3e: Hacer clic en el botón reservar hotel
     WebUI.click(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'))
 }
@@ -62,7 +75,6 @@ if (!(hotelVisible)) {
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/select_package'))
 
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_quote1'))
-
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_book'))
 
 WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europamundo/input_arrival_transfers_oti'), '92F056258DEBDA2EADD45A914D39E750', 
@@ -72,9 +84,7 @@ WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europ
     '5CB06160CD9766F80330564F57D34026', true)
 
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/europamundo/repository_europamundo/button_quote2'))
-
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_continue'))
-
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/button_finalization_prebook'), 10)
 
 WebUI.selectOptionByValue(findTestObject('Euromundo/pax_page/select_title_pax1'), 'MR', false)
@@ -152,23 +162,15 @@ WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_book'))
 
 // ❌ Cancelar reserva
 WebUI.click(findTestObject('Euromundo/book_steps/button_cancel_book'))
-
 WebUI.waitForAlert(10)
-
 WebUI.acceptAlert()
 
 // 📢 Validación mensaje de cancelación
 TestObject alertCancel = new TestObject('dynamic/alertCancel')
-
 alertCancel.addProperty('xpath', ConditionType.EQUALS, '//p[contains(@class,\'booking-details__status-text\') and contains(text(),\'Su reserva ha sido cancelada.\')]')
-
 WebUI.waitForElementVisible(alertCancel, 10)
-
 WebUI.scrollToElement(findTestObject('Euromundo/book_steps/bookings'), 10)
-
 String actualText = WebUI.getText(alertCancel)
-
 WebUI.verifyMatch(actualText.trim(), 'Su reserva ha sido cancelada.', false, FailureHandling.STOP_ON_FAILURE)
-
 WebUI.comment('✅ El texto de cancelación se encontró correctamente.')
 
