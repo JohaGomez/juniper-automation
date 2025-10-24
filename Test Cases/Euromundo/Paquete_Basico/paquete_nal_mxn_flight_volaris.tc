@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>paquete_nal_mxn_flight_volaris</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>cf265b66-92b4-4606-9178-728aa2675b0f</testCaseGuid>
+</TestCaseEntity>

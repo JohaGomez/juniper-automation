@@ -77,11 +77,53 @@ WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/select_
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_quote1'))
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_book'))
 
-WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europamundo/input_arrival_transfers_oti'), '92F056258DEBDA2EADD45A914D39E750', 
-    true)
+// ===========================================================
+// 🔹 TRASLADO DE IDA
+// ===========================================================
+TestObject dropdown = new TestObject('dropdownTransfer')
+dropdown.addProperty("xpath", ConditionType.EQUALS, "//select[contains(@class,'package-prebooking__additional-transfer-select')]")
 
-WebUI.selectOptionByValue(findTestObject('Euromundo/europamundo/repository_europamundo/input_departure_transfers_oti'), 
-    '5CB06160CD9766F80330564F57D34026', true)
+WebUI.waitForElementVisible(dropdown, 10)
+
+// 🧠 JS para obtener todas las opciones visibles del <select>
+String jsObtenerOpciones = """
+    var select = document.evaluate(arguments[0], document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    if (!select) return [];
+    var opciones = [];
+    for (var i = 0; i < select.options.length; i++) {
+        opciones.push(select.options[i].text.trim());
+    }
+    return opciones;
+"""
+
+List<String> opciones = (List<String>) WebUI.executeJavaScript(jsObtenerOpciones, [dropdown.findPropertyValue("xpath")])
+
+if (opciones.size() > 1) {
+	String primeraOpcion = opciones[1]
+	WebUI.selectOptionByLabel(dropdown, primeraOpcion, false)
+	WebUI.comment("✅ Primera opción seleccionada (ida): ${primeraOpcion}")
+} else {
+	WebUI.comment("⚠️ No hay opciones disponibles para seleccionar en el traslado de ida.")
+}
+
+
+// ===========================================================
+// 🔹 TRASLADO DE REGRESO
+// ===========================================================
+TestObject dropdownReturn = new TestObject('dropdownReturn')
+dropdownReturn.addProperty("xpath", ConditionType.EQUALS, "//select[contains(@class,'js-package-prebooking-transfer-return-select')]")
+
+WebUI.waitForElementVisible(dropdownReturn, 10)
+
+List<String> opcionesReturn = (List<String>) WebUI.executeJavaScript(jsObtenerOpciones, [dropdownReturn.findPropertyValue("xpath")])
+
+if (opcionesReturn.size() > 1) {
+	String primeraOpcionReturn = opcionesReturn[1]
+	WebUI.selectOptionByLabel(dropdownReturn, primeraOpcionReturn, false)
+	WebUI.comment("✅ Primera opción seleccionada (regreso): ${primeraOpcionReturn}")
+} else {
+	WebUI.comment("⚠️ No hay opciones disponibles para seleccionar en el traslado de regreso.")
+}
 
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/europamundo/repository_europamundo/button_quote2'))
 WebUI.click(findTestObject('Euromundo/europamundo/repository_europamundo/button_continue'))

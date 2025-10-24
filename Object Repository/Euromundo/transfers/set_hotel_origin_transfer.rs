@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>set_hotel_origin_transfer</name>
+   <tag></tag>
+   <elementGuidId>31253447-339c-4996-bbab-425335c56cd0</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>BASIC</key>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//*[@id=&quot;main-content&quot;]/div[2]/div/div[3]/div[4]/div[4]/div[1]/div[2]/div/div[3]/div[1]/div[2]/div[2]/div/label[1]/input&#xd;
+|&#xd;
+//*[@id=&quot;main-content&quot;]/div[2]/div/div[3]/div[3]/div[4]/div[1]/div[2]/div/div[3]/div[1]/div[2]/div[2]/div/label[1]/input&#xd;
+</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>false</useRalativeImagePath>
+</WebElementEntity>

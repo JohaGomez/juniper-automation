@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>europamundo_search_oti_performance</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>b0487e35-adda-44c3-840c-2616d999bbdc</testCaseGuid>
+</TestCaseEntity>

@@ -46,6 +46,7 @@ WebUI.click(findTestObject('Euromundo/circuitos/repository_circuitos_nal/select_
 // 📍 Origen y destino
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/input_destination_inter'), 15)
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
+WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/input_destination_inter'), 15)
 WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/input_destination_inter'), '185204', true)
 //WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/select_origin_inter'), '35908', true)
 WebUI.waitForElementVisible(findTestObject('Euromundo/book_steps/origin_date_inter'), 10)
@@ -218,17 +219,23 @@ if (WebUI.verifyElementPresent(warningPrecioObj, 5, FailureHandling.OPTIONAL)) {
 	String warningText = WebUI.getText(warningPrecioObj)?.trim()
 	KeywordUtil.logInfo("📌 Texto warning: ${warningText}")
 
-	def matcher = (warningText =~ /\$?\s?([\d.,]+)\s?USD/)
-	def precios = matcher.collect { it[1]?.trim() }
+	// Regex que captura precios en USD o MXN
+	def matcher = (warningText =~ /\$?\s?([\d.,]+)\s?(USD|MXN)/)
+	def precios = matcher.collect { 
+		[valor: it[1]?.trim(), moneda: it[2]]
+	}
 
 	if (!precios.isEmpty()) {
-		String nuevoPrecioStr = precios.last()
+		def ultimoPrecio = precios.last()
+		String nuevoPrecioStr = ultimoPrecio.valor
+		String moneda = ultimoPrecio.moneda
+
 		try {
 			// 🚀 Solo aquí se usa parseMoney
 			mejorPrecio = ValidacionesPrebook.parseMoney(nuevoPrecioStr)
-			KeywordUtil.logInfo("💲 Nuevo precio detectado (warning): ${mejorPrecio}")
+			KeywordUtil.logInfo("💲 Nuevo precio detectado (warning): ${mejorPrecio} ${moneda}")
 		} catch (Exception e) {
-			KeywordUtil.markWarning("⚠️ No se pudo convertir el nuevo precio: ${nuevoPrecioStr}")
+			KeywordUtil.markWarning("⚠️ No se pudo convertir el nuevo precio: ${nuevoPrecioStr} ${moneda}")
 		}
 	} else {
 		KeywordUtil.markWarning("⚠️ No se pudo extraer ningún precio del warning")

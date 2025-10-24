@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>vct_search_nal_quote</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>13c71905-b410-404e-9d5a-cffde7ad0402</testCaseGuid>
+</TestCaseEntity>

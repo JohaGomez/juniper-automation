@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>gd_search_inter_flight_aeromexico</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>ad0d3253-aa4e-4a67-96aa-79394354146d</testCaseGuid>
+</TestCaseEntity>

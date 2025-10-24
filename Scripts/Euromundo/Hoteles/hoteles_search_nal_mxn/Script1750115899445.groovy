@@ -211,20 +211,21 @@ if (WebUI.waitForElementClickable(cerrarPoliticaBtn, 10, FailureHandling.OPTIONA
 	KeywordUtil.markWarning("⚠️ No se encontró el botón 'Cerrar' del modal de políticas")
 }
 
-// ⚖️ Política de cancelación
-TestObject policyTextObj = new TestObject('policyText')
-policyTextObj.addProperty('xpath', ConditionType.EQUALS, '//div[contains(text(),\'cancelar la reserva\')]')
+// ⚖️ Política de cancelación (validación estricta con normalize-space)
+TestObject policyFees = new TestObject('policyFees')
+policyFees.addProperty(
+	'xpath',
+	ConditionType.EQUALS,
+	"//div[contains(@class,'col-sm-12') and contains(normalize-space(.),'Reserva sujeta a gastos de cancelación')]"
+)
 
-String policyText = WebUI.getText(policyTextObj)
-
-if (policyText.toLowerCase().contains('sin incurrir en gastos')) {
-    TestObject finalizeBtn = new TestObject('finalizeReservationBtn')
-    finalizeBtn.addProperty('xpath', ConditionType.EQUALS, '//button[contains(text(),\'Finalizar reserva\')]')
-    WebUI.waitForElementClickable(finalizeBtn, 10)
+if (WebUI.waitForElementPresent(policyFees, 5, FailureHandling.OPTIONAL)) {
+	String txt = WebUI.getText(policyFees)?.trim()
+	KeywordUtil.markFailedAndStop("🚫 Política restrictiva detectada: ${txt}")
 } else {
-    KeywordUtil.logInfo('⚠️ Hotel no reembolsable: la política no permite cancelación sin gastos.')
-    KeywordUtil.markFailed('Hotel no reembolsable: flujo detenido por política restrictiva.')
+	KeywordUtil.logInfo("✅ No se detectó política restrictiva, el flujo continúa.")
 }
+
 
 // 👥 Datos pasajeros
 // 🛡 Validar nuevamente rangos por seguridad

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>paquetes_auv_transfer_change</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>855d6f77-3a75-4d27-bc65-844ed177b091</testCaseGuid>
+</TestCaseEntity>

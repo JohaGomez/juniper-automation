@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>vct_search_nal_flight_change</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>d2e299ed-0170-436c-a41f-2579e2623247</testCaseGuid>
+</TestCaseEntity>

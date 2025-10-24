@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>gd_search_nal_flight_aerobus</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>7cf33895-3230-4839-a06f-98affa419e16</testCaseGuid>
+   <variableLinks>
+      <testDataLinkId></testDataLinkId>
+      <type>DEFAULT</type>
+      <value></value>
+      <variableId>afa0dd92-12dd-448f-923c-85c6dae925b3</variableId>
+   </variableLinks>
+   <variableLinks>
+      <testDataLinkId></testDataLinkId>
+      <type>DEFAULT</type>
+      <value></value>
+      <variableId>f3385c03-737d-4f75-91bd-21f98251f1ba</variableId>
+   </variableLinks>
+   <variable>
+      <defaultValue>'5'</defaultValue>
+      <description></description>
+      <id>afa0dd92-12dd-448f-923c-85c6dae925b3</id>
+      <masked>false</masked>
+      <name>edadNino1</name>
+   </variable>
+   <variable>
+      <defaultValue>'0'</defaultValue>
+      <description></description>
+      <id>f3385c03-737d-4f75-91bd-21f98251f1ba</id>
+      <masked>false</masked>
+      <name>edadInf1</name>
+   </variable>
+</TestCaseEntity>

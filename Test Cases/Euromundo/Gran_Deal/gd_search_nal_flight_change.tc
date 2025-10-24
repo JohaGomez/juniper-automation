@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>gd_search_nal_flight_change</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>38a71372-38e1-4a6f-be9a-c2fc9d4d94f1</testCaseGuid>
+   <variableLinks>
+      <testDataLinkId></testDataLinkId>
+      <type>DEFAULT</type>
+      <value></value>
+      <variableId>953065bd-b1ef-4cd0-aa4e-ed9b406d4b34</variableId>
+   </variableLinks>
+   <variableLinks>
+      <testDataLinkId></testDataLinkId>
+      <type>DEFAULT</type>
+      <value></value>
+      <variableId>8e4b32c4-c006-4e44-b38e-cc65f300f3b5</variableId>
+   </variableLinks>
+   <variable>
+      <defaultValue>'5'</defaultValue>
+      <description></description>
+      <id>953065bd-b1ef-4cd0-aa4e-ed9b406d4b34</id>
+      <masked>false</masked>
+      <name>edadNino1</name>
+   </variable>
+   <variable>
+      <defaultValue>'0'</defaultValue>
+      <description></description>
+      <id>8e4b32c4-c006-4e44-b38e-cc65f300f3b5</id>
+      <masked>false</masked>
+      <name>edadInf1</name>
+   </variable>
+</TestCaseEntity>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>vct_search_inter_flight_change</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>e8f9cd36-d340-4fa3-8852-45366d9840d8</testCaseGuid>
+</TestCaseEntity>

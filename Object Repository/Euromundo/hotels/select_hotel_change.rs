@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>select_hotel_change</name>
+   <tag></tag>
+   <elementGuidId>8802aed0-505c-4ad0-80da-917029d09528</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>BASIC</key>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//*[@id=&quot;results-list&quot;]/div[2]/div/ol/li[2]/article/section/div[2]/div/div[2]/button&#xd;
+|&#xd;
+//*[@id=&quot;results-list&quot;]/div[2]/div/ol/li[4]/article/section/div[1]/div/div[2]/button</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>false</useRalativeImagePath>
+</WebElementEntity>

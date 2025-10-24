@@ -143,85 +143,78 @@ if (!(hotelVisible)) {
 
 WebUI.click(findTestObject('Euromundo/book_steps/button_reservar_hoteles'))
 
-// ===========================
-// Políticas de Cancelación - Dinámico con Map
-// ===========================
+// ====================================================
+// 🅰️ POLÍTICAS DE CANCELACIÓN – PÁGINA DE PASAJEROS
+// ====================================================
 
-// 1. Click en el botón "Ver Política"
-TestObject verPoliticaBtn = new TestObject("verPoliticaBtn")
+// 1️⃣ Click en el botón "Ver Política"
+TestObject verPoliticaBtn = new TestObject("verPoliticaBtn_A")
 verPoliticaBtn.addProperty("xpath", ConditionType.EQUALS, "//button[contains(@class,'js-open-modal') and normalize-space()='Ver Política']")
 
-WebUI.waitForElementClickable(verPoliticaBtn, 10)
+WebUI.waitForElementClickable(verPoliticaBtn, 15)
 WebUI.click(verPoliticaBtn)
+KeywordUtil.logInfo("🪟 Abriendo modal de políticas en página de pasajeros...")
 
-// 2. Esperar a que se muestre el modal
+// 2️⃣ Esperar a que el modal aparezca
 TestObject modalPoliticas_A = new TestObject("modalPoliticas_A")
 modalPoliticas_A.addProperty("xpath", ConditionType.EQUALS, "//*[@id='main-modal']")
-WebUI.waitForElementVisible(modalPoliticas_A, 10)
+WebUI.waitForElementVisible(modalPoliticas_A, 15)
 
-// 3. Capturar todas las filas de políticas
+// 3️⃣ Capturar las filas
 List<WebElement> filasPoliticas_A = WebUI.findWebElements(
-	new TestObject().addProperty("xpath", ConditionType.EQUALS, "//*[@id='main-modal']//div[@class='row cancelation-rule']"),
+	new TestObject().addProperty("xpath", ConditionType.EQUALS, "//*[@id='main-modal']//div[contains(@class,'cancelation-rule')]"),
 	10
 )
 
-// 4. Lista de mapas para guardar las políticas
-List<Map<String, String>> politicas = []
+List<Map<String, String>> politicasA = []
 
-for (int i = 0; i < filasPoliticas_A.size(); i++) {
-	WebElement fila = filasPoliticas_A[i]
-
-	// Condición (siempre existe)
-	String condicion = fila.findElement(By.xpath(".//div[contains(@class,'rule-condition')]")).getText().trim()
-
-	// Cargo (puede que no exista en la última fila)
+for (WebElement fila : filasPoliticas_A) {
+	String condicion = "N/A"
 	String cargo = "N/A"
-	List<WebElement> cargos = fila.findElements(By.xpath(".//div[contains(@class,'rule-charge')]"))
-	if (cargos.size() > 0) {
-		cargo = cargos[0].getText().trim()
+
+	try {
+		condicion = fila.findElement(By.xpath(".//div[contains(@class,'rule-condition')]")).getText().trim()
+	} catch (Exception e) {
+		KeywordUtil.markWarning("⚠️ No se encontró texto de condición en una fila.")
+	}
+	try {
+		cargo = fila.findElement(By.xpath(".//div[contains(@class,'rule-charge')]")).getText().trim()
+	} catch (Exception e) {
+		// cargo puede no existir, no se marca error
 	}
 
-	// Guardar como mapa
-	Map<String, String> politica = [
-		"condicion" : condicion,
-		"cargo"     : cargo
-	]
-	politicas.add(politica)
+	politicasA.add(["condicion": condicion, "cargo": cargo])
 }
 
-// 5. Imprimir políticas en consola y log de Katalon
-for (int i = 0; i < politicas.size(); i++) {
-	String msg = "📌 Política ${i+1}: Condición='${politicas[i]['condicion']}' | Cargo='${politicas[i]['cargo']}'"
-	println(msg)                        // Consola
-	KeywordUtil.logInfo(msg)            // Log de ejecución
+// 4️⃣ Log detallado
+KeywordUtil.logInfo("📋 Políticas capturadas en página de pasajeros:")
+politicasA.eachWithIndex { pol, idx ->
+	KeywordUtil.logInfo("📌 Política ${idx+1}: Condición='${pol.condicion}' | Cargo='${pol.cargo}'")
 }
 
-// 6. Cerrar el modal
-TestObject cerrarPoliticaBtn = new TestObject("cerrarPoliticaBtn")
-cerrarPoliticaBtn.addProperty(
-	"xpath",
-	ConditionType.EQUALS,
-	"//*[@id='main-modal']//div[@class='modal-footer']//button[contains(@class,'btn-primary') and normalize-space()='Cerrar']"
-)
-
+// 5️⃣ Cerrar modal
+TestObject cerrarPoliticaBtn = new TestObject("cerrarPoliticaBtn_A")
+cerrarPoliticaBtn.addProperty("xpath", ConditionType.EQUALS, "//*[@id='main-modal']//button[normalize-space()='Cerrar']")
 if (WebUI.waitForElementClickable(cerrarPoliticaBtn, 10, FailureHandling.OPTIONAL)) {
 	WebUI.click(cerrarPoliticaBtn)
+	KeywordUtil.logInfo("🧩 Modal cerrado correctamente.")
 } else {
-	KeywordUtil.markWarning("⚠️ No se encontró el botón 'Cerrar' del modal de políticas")
+	KeywordUtil.markWarning("⚠️ No se encontró botón 'Cerrar' en el modal.")
 }
 
-// ⚖️ Política de cancelación
-TestObject policyTextObj = new TestObject('policyText')
-policyTextObj.addProperty('xpath', ConditionType.EQUALS, '//div[contains(text(),\'cancelar la reserva\')]')
-String policyText = WebUI.getText(policyTextObj)
+// ⚖️ Política de cancelación (validación estricta con normalize-space)
+TestObject policyFees = new TestObject('policyFees')
+policyFees.addProperty(
+	'xpath',
+	ConditionType.EQUALS,
+	"//div[contains(@class,'col-sm-12') and contains(normalize-space(.),'Reserva sujeta a gastos de cancelación')]"
+)
 
-if (policyText.toLowerCase().contains('sin incurrir en gastos')) {
-	TestObject finalizeBtn = new TestObject('finalizeReservationBtn')
-	finalizeBtn.addProperty('xpath', ConditionType.EQUALS, '//button[contains(text(),\'Finalizar reserva\')]')
-	WebUI.waitForElementClickable(finalizeBtn, 10)
+if (WebUI.waitForElementPresent(policyFees, 5, FailureHandling.OPTIONAL)) {
+	String txt = WebUI.getText(policyFees)?.trim()
+	KeywordUtil.markFailedAndStop("🚫 Política restrictiva detectada: ${txt}")
 } else {
-	KeywordUtil.logInfo('⚠️ Hotel no reembolsable: la política no permite cancelación sin gastos.')
-	KeywordUtil.markFailed('Hotel no reembolsable: flujo detenido por política restrictiva.')
+	KeywordUtil.logInfo("✅ No se detectó política restrictiva, el flujo continúa.")
 }
 
 
@@ -373,6 +366,225 @@ if (WebUI.verifyElementPresent(importantInfoCheckbox, 5, FailureHandling.OPTIONA
 
 //💾 Validaciones de precios para cerrar reserva
 
+// ====================================================
+// 🅱️ POLÍTICAS DE CANCELACIÓN – PÁGINA DE PAGO
+// ====================================================
+
+KeywordUtil.logInfo("💳 Capturando políticas en página de pago...")
+
+// 1️⃣ Botón "Revise las políticas"
+TestObject verPoliticaBtnB = new TestObject("verPoliticaBtn_B")
+verPoliticaBtnB.addProperty(
+	"xpath",
+	ConditionType.EQUALS,
+	"//*[@class='confirm-booking__policies-fields__policies']//button[contains(.,'Revise las políticas')]"
+)
+
+if (WebUI.waitForElementVisible(verPoliticaBtnB, 15, FailureHandling.OPTIONAL)) {
+	try {
+		WebUI.scrollToElement(verPoliticaBtnB, 2)
+		WebUI.waitForElementClickable(verPoliticaBtnB, 10)
+		WebUI.click(verPoliticaBtnB)
+		KeywordUtil.logInfo("🪟 Click realizado en 'Revise las políticas' (modo normal).")
+	} catch (Exception e) {
+		WebUI.executeJavaScript("arguments[0].click();", Arrays.asList(WebUiCommonHelper.findWebElement(verPoliticaBtnB, 10)))
+		KeywordUtil.logInfo("🪄 Click forzado con JavaScript sobre 'Revise las políticas'.")
+	}
+} else {
+	KeywordUtil.markWarning("⚠️ No se encontró el botón 'Revise las políticas' en la página de pago.")
+}
+
+// 2️⃣ Esperar modal REMOTO (Bootstrap) correctamente abierto
+TestObject modalPoliticas_B = new TestObject("modalPoliticas_B")
+modalPoliticas_B.addProperty(
+	"xpath",
+	ConditionType.EQUALS,
+	"//div[contains(@class,'modal') and contains(@class,'in')]//div[@class='modal-content']"
+)
+if (!WebUI.waitForElementVisible(modalPoliticas_B, 10, FailureHandling.OPTIONAL)) {
+	WebUI.delay(2)
+	WebUI.waitForElementVisible(modalPoliticas_B, 10)
+}
+KeywordUtil.logInfo("🪟 Modal B visible.")
+
+// 3️⃣ Capturar políticas desde el modal-body (robusto) y separarlas en 3
+List<Map<String, String>> politicasB = []
+
+TestObject modalBodyB = new TestObject("modalBodyB")
+modalBodyB.addProperty(
+	"xpath",
+	ConditionType.EQUALS,
+	"//div[contains(@class,'modal') and contains(@class,'in')]//div[@class='modal-content']//div[contains(@class,'modal-body')]"
+)
+
+// 3.1) innerHTML → texto con saltos (variables locales para no colisionar)
+String htmlB = ""
+for (int k = 0; k < 10 && (htmlB == null || htmlB.trim().isEmpty()); k++) {
+	try {
+		def el = WebUiCommonHelper.findWebElement(modalBodyB, 5)
+		htmlB = (String) WebUI.executeJavaScript("return arguments[0].innerHTML || '';", Arrays.asList(el))
+	} catch (Exception e) {
+		htmlB = WebUI.getText(modalBodyB)
+	}
+	if (htmlB == null || htmlB.trim().isEmpty()) WebUI.delay(0.2)
+}
+
+// 3.2) HTML → texto y **reparación segura** de horas partidas (sin regex complejas)
+String htmlB2 = (htmlB ?: '')
+String textoB2 = ''
+if (htmlB2) {
+	textoB2 = htmlB2
+		.replaceAll('(?i)<br\\s*/?>', '\n')
+		.replaceAll('(?i)</p>', '\n')
+		.replaceAll('(?i)<[^>]+>', ' ')
+} else {
+	textoB2 = ''
+}
+
+// Unir líneas cuando una línea es SOLO ":mm:ss" o ":hh:mm:ss"
+List<String> rawLinesB = Arrays.asList(textoB2.split('\\r?\\n'))
+List<String> fixedLinesB = new ArrayList<>()
+rawLinesB.each { ln ->
+	String line = (ln ?: '').replace('\u00A0',' ').replaceAll('[\\t\\x0B\\f\\r]+',' ').trim()
+	def onlyTime = (line =~ /^:(\d{2}:\d{2}(?::\d{2})?)$/)
+	if (onlyTime.matches() && !fixedLinesB.isEmpty()) {
+		String last = fixedLinesB.remove(fixedLinesB.size()-1).replaceAll('\\s+$','')
+		fixedLinesB.add(last + ':' + onlyTime[0][1]) // pega ":mm:ss" o ":hh:mm:ss" a la hora anterior
+	} else {
+		fixedLinesB.add(line)
+	}
+}
+textoB2 = fixedLinesB.join('\n')
+
+// Limpieza básica (conservando \n)
+textoB2 = textoB2.replace('\u00A0',' ').replaceAll('[\\t\\x0B\\f\\r]+',' ')
+
+// 3.3) Segmentar por políticas con separador literal (evita problemas con split/regex)
+List<String> segmentosB2 = []
+String lowerB2 = (textoB2 ?: '').toLowerCase()
+final String SEP_B = '§§SEG_B§§'
+final String SEP_B_REPL = java.util.regex.Matcher.quoteReplacement(SEP_B)
+String workB = (textoB2 ?: '')
+
+if (lowerB2.contains('cancelando') || lowerB2.contains('fecha y hora')) {
+	workB = workB.replaceAll(
+		'(?is)(?=\\b(?:cancelando\\s+desde|cancelando\\s+despu[eé]s\\s+de|fecha y hora))',
+		SEP_B_REPL
+	)
+} else {
+	// Fallback: antes de un cargo tipo ": 0 USD", ": $ 5.15 USD", ": 1 noche", etc.
+	workB = workB.replaceAll(
+		'(?i)(?=:\\s*(?:\\$?\\s?\\d|\\d|noche))',
+		SEP_B_REPL
+	)
+}
+String[] rawSegsB2 = workB.split(java.util.regex.Pattern.quote(SEP_B))
+segmentosB2 = Arrays.asList(rawSegsB2).collect { it.trim() }.findAll { it }
+
+// 3.4) Regex DOTALL y parseo a formato A (condición/cargo)
+// Evita cortar en ":" de hora; y añade soporte para "o no show"
+def pDesdeHastaB2 = ~/(?is)^(?:cancelando\s+)?desde\s+(.*?)\s+hasta\s+(.*?)(?::\s*(?!\d{1,2}:)(.+))?$/
+def pDespuesDeB2  = ~/(?is)^(?:cancelando\s+)?despu[eé]s\s+de\s+(.*?)(?::\s*(?!\d{1,2}:)(.+))?$/
+def pNoShowB2     = ~/(?is)^(?:cancelando\s+)?desde\s+(.*?)\s+o\s+no[- ]?show(?::\s*(?!\d{1,2}:)(.+))?$/
+def pFechaHoraB2  = ~/(?is)^fecha y hora.*$/
+
+segmentosB2.each { seg ->
+	String s = (seg ?: '').trim()
+	if (!s) return
+
+	def m1 = (s =~ pDesdeHastaB2)
+	def m2 = (s =~ pDespuesDeB2)
+	def mNo = (s =~ pNoShowB2)
+	def m3 = (s =~ pFechaHoraB2)
+
+	if (m1.matches()) {
+		String desde = (m1[0][1] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		String hasta = (m1[0][2] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		String cargo = (m1[0][3] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		politicasB.add([condicion: "Cancelando desde ${desde} hasta ${hasta}", cargo: cargo])
+	} else if (m2.matches()) {
+		String despues = (m2[0][1] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		String cargo   = (m2[0][2] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		politicasB.add([condicion: "Cancelando después de ${despues}", cargo: cargo])
+	} else if (mNo.matches()) {
+		String desde = (mNo[0][1] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		String cargo = (mNo[0][2] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		// Estandarizamos a la misma redacción que A
+		politicasB.add([condicion: "Cancelando desde ${desde} o no show", cargo: cargo])
+	} else if (m3.matches()) {
+		politicasB.add([condicion: "Fecha y hora calculada basándose en el huso horario de destino.", cargo: "N/A"])
+	}
+}
+
+// 4️⃣ Normalización y comparación contra A (restaurado)
+List<Map<String, String>> politicasARefB = []
+try { if (politicasA) politicasARefB = politicasA } catch (Throwable ignore) {}
+try { if (politicasARefB.isEmpty() && politicas) politicasARefB = politicas } catch (Throwable ignore) {}
+
+def _normTextBcmp = { String s -> (s ?: "").replace('\u00A0',' ').replaceAll('\\s+',' ').trim() }
+def _toCmpMapB    = { Map m -> [condicion: _normTextBcmp(m.condicion), cargo: _normTextBcmp(m.cargo)] }
+
+List<Map<String, String>> _A_Bcmp = politicasARefB.collect { _toCmpMapB(it) }
+List<Map<String, String>> _B_Bcmp = politicasB.collect    { _toCmpMapB(it) }
+
+if (_A_Bcmp.isEmpty()) {
+	KeywordUtil.markWarning("⚠️ [B] No hay políticas del paso A para comparar.")
+} else {
+	if (_A_Bcmp.size() != _B_Bcmp.size()) {
+		KeywordUtil.markWarning("⚠️ [B] Cantidad difiere: A=${_A_Bcmp.size()} vs B=${_B_Bcmp.size()} (se comparará por índice).")
+	}
+	KeywordUtil.logInfo("🔎 [B] Comparando políticas A vs B…")
+	int _n = Math.max(_A_Bcmp.size(), _B_Bcmp.size())
+	for (int i = 0; i < _n; i++) {
+		def a = i < _A_Bcmp.size() ? _A_Bcmp[i] : [condicion:"N/A", cargo:"N/A"]
+		def b = i < _B_Bcmp.size() ? _B_Bcmp[i] : [condicion:"N/A", cargo:"N/A"]
+		if (a.condicion == b.condicion && a.cargo == b.cargo) {
+			KeywordUtil.logInfo("✅ [B] Política ${i+1} coincide.")
+		} else {
+			KeywordUtil.markWarning("❌ [B] Diferencia en política ${i+1}: A='${a}' vs B='${b}'")
+		}
+	}
+}
+
+
+// 5️⃣ Log bonito en formato A
+KeywordUtil.logInfo("📋 Políticas capturadas en página de pago (B):")
+for (int i = 0; i < politicasB.size(); i++) {
+	String msg = "📌 Política ${i+1}: Condición='${politicasB[i]['condicion']}' | Cargo='${politicasB[i]['cargo']}'"
+	println(msg)
+	KeywordUtil.logInfo(msg)
+}
+
+// 6️⃣ Cerrar modal con la X y esperar que desaparezca el overlay
+TestObject cerrarPoliticaBtnB = new TestObject("cerrarPoliticaBtn_B")
+cerrarPoliticaBtnB.addProperty(
+	"xpath",
+	ConditionType.EQUALS,
+	"//div[contains(@class,'modal') and contains(@class,'in')]//button[contains(@class,'close') or @aria-label='Cerrar']"
+)
+if (WebUI.waitForElementVisible(cerrarPoliticaBtnB, 10, FailureHandling.OPTIONAL)) {
+	try {
+		WebUI.click(cerrarPoliticaBtnB)
+		KeywordUtil.logInfo("🧩 Modal B cerrado (click normal).")
+	} catch (Exception e) {
+		WebUI.executeJavaScript("arguments[0].click();", Arrays.asList(WebUiCommonHelper.findWebElement(cerrarPoliticaBtnB, 10)))
+		KeywordUtil.logInfo("🪄 Modal B cerrado (click JS).")
+	}
+} else {
+	KeywordUtil.markWarning("⚠️ No se encontró la 'X' para cerrar el modal B.")
+}
+
+TestObject overlayModalInB = new TestObject("overlayModalIn_B")
+overlayModalInB.addProperty("xpath", ConditionType.EQUALS, "//div[contains(@class,'modal') and contains(@class,'in')]")
+WebUI.waitForElementNotPresent(overlayModalInB, 10)
+WebUI.delay(0.5)
+
+// 7️⃣ Click en botón Confirm Booking
+TestObject btnCustom = new TestObject("btnCustom").addProperty("xpath", ConditionType.EQUALS, "//button[contains(@class,'confirm-booking__save-button') or contains(@class,'confirm-booking')]")
+WebUI.waitForElementClickable(btnCustom, 10)
+WebUI.click(btnCustom)
+WebUI.comment("✅ Click realizado correctamente en el botón de confirm-booking.")
+
 // Crear un TestObject para el título en Book
 TestObject tituloBookObj = new TestObject('tituloBookObj')
 tituloBookObj.addProperty('xpath', ConditionType.EQUALS, '//*[@id="main-content"]/div[2]/div/div/div[1]/div[1]/div/div[2]/table/tbody/tr[1]/td/div[2]/div[1]/span')
@@ -456,6 +668,248 @@ try {
 }
 
 WebUI.click(findTestObject('Euromundo/checkout_page/checkbox_TyC_checkout'))
+
+// ====================================================
+// 🅲 POLÍTICAS DE CANCELACIÓN – MODAL C (alineado con B)
+// ====================================================
+
+// Asegurar contenedores globales (evita MissingPropertyException)
+try { politicasB } catch (Throwable _){ politicasB = new ArrayList<Map<String,String>>() }
+try { politicasC } catch (Throwable _){ politicasC = new ArrayList<Map<String,String>>() }
+
+KeywordUtil.logInfo("🧾 [C] Capturando políticas (con toggle) y estandarizando como en B...")
+
+// 0) Abrir toggle de detalles
+TestObject toggleBtnC2 = new TestObject("toggleBtn_C2")
+toggleBtnC2.addProperty(
+	"xpath",
+	ConditionType.EQUALS,
+	"//*[@class='shopping-basket__line-product-name']/button[contains(@class,'shopping-basket__line-product-extended-details-toggle')]"
+)
+if (WebUI.waitForElementClickable(toggleBtnC2, 10, FailureHandling.OPTIONAL)) {
+	try {
+		WebUI.click(toggleBtnC2)
+		KeywordUtil.logInfo("📂 [C] Toggle de detalles abierto.")
+	} catch (Exception e) {
+		WebUI.executeJavaScript("arguments[0].click();", Arrays.asList(WebUiCommonHelper.findWebElement(toggleBtnC2, 5)))
+		KeywordUtil.logInfo("🪄 [C] Toggle abierto con JS.")
+	}
+} else {
+	KeywordUtil.markWarning("ℹ️ [C] Toggle no visible/clicable; continuando…")
+}
+
+// 1) Abrir enlace “Política de cancelación”
+TestObject verPoliticaBtnC2 = new TestObject("verPoliticaBtn_C2")
+verPoliticaBtnC2.addProperty(
+	"xpath",
+	ConditionType.EQUALS,
+	"//*[@id='main-content']//a[contains(normalize-space(.),'Política de cancelación')]"
+)
+if (WebUI.waitForElementClickable(verPoliticaBtnC2, 10, FailureHandling.OPTIONAL)) {
+	try {
+		WebUI.click(verPoliticaBtnC2)
+		KeywordUtil.logInfo("🪟 [C] Click en 'Política de cancelación'.")
+	} catch (Exception e) {
+		WebUI.executeJavaScript("arguments[0].click();", Arrays.asList(WebUiCommonHelper.findWebElement(verPoliticaBtnC2, 5)))
+		KeywordUtil.logInfo("🪄 [C] Click forzado en 'Política de cancelación'.")
+	}
+} else {
+	KeywordUtil.markWarning("⚠️ [C] No se encontró enlace 'Política de cancelación'.")
+}
+
+// 2) Esperar modal visible (Bootstrap remoto)
+TestObject modalPoliticas_C2 = new TestObject("modalPoliticas_C2")
+modalPoliticas_C2.addProperty(
+	"xpath",
+	ConditionType.EQUALS,
+	"//div[contains(@class,'modal') and (contains(@class,'in') or contains(@style,'display: block'))]//div[@class='modal-content']"
+)
+if (!WebUI.waitForElementVisible(modalPoliticas_C2, 10, FailureHandling.OPTIONAL)) {
+	WebUI.delay(1.5)
+	WebUI.waitForElementVisible(modalPoliticas_C2, 10)
+}
+KeywordUtil.logInfo("🪟 [C] Modal visible.")
+
+// 3) Localizar el modal-body
+List<String> bodyXPathsC2 = Arrays.asList(
+	"//div[contains(@class,'modal') and contains(@class,'in')]//div[@class='modal-content']//div[contains(@class,'modal-body')]",
+	"//div[@role='dialog' and contains(@class,'modal') and contains(@style,'display: block')]//div[contains(@class,'modal-body')]",
+	"//*[@id='main-modal']//div[contains(@class,'modal-body')]",
+	"//div[contains(@class,'modal-dialog')]//div[contains(@class,'modal-body')]"
+)
+WebElement bodyElC2 = null
+String chosenXpathC2 = null
+for (String xp : bodyXPathsC2) {
+	TestObject probe = new TestObject("modalBody_C2_probe")
+	probe.addProperty("xpath", ConditionType.EQUALS, xp)
+	try {
+		if (WebUI.waitForElementVisible(probe, 4, FailureHandling.OPTIONAL)) {
+			bodyElC2 = WebUiCommonHelper.findWebElement(probe, 5)
+			chosenXpathC2 = xp
+			break
+		}
+	} catch (Throwable ignored) {}
+}
+
+// 4) innerHTML → texto; si falla, getText
+String htmlC2 = ""
+if (bodyElC2 != null) {
+	try {
+		htmlC2 = (String) WebUI.executeJavaScript("return arguments[0].innerHTML || '';", Arrays.asList(bodyElC2))
+	} catch (Exception e) {
+		TestObject fallbackTO = new TestObject("modalBody_C2_fallback")
+		fallbackTO.addProperty("xpath", ConditionType.EQUALS, chosenXpathC2)
+		htmlC2 = WebUI.getText(fallbackTO)
+	}
+}
+
+// 5) HTML → texto con \n y recomposición segura de horas (igual que B)
+String textoC2 = ""
+if (htmlC2 != null && htmlC2.trim().length() > 0) {
+	textoC2 = htmlC2
+		.replaceAll('(?i)<br\\s*/?>', '\n')
+		.replaceAll('(?i)</p>', '\n')
+		.replaceAll('(?i)<[^>]+>', ' ')
+} else {
+	textoC2 = ""
+}
+
+// Unir líneas ":mm:ss" o ":hh:mm:ss" a la anterior
+List<String> rawLinesC2 = Arrays.asList(textoC2.split('\\r?\\n'))
+List<String> fixedLinesC2 = new ArrayList<>()
+rawLinesC2.each { ln ->
+	String line = (ln ?: '').replace('\u00A0',' ').replaceAll('[\\t\\x0B\\f\\r]+',' ').trim()
+	def onlyTime = (line =~ /^:(\d{2}:\d{2}(?::\d{2})?)$/)
+	if (onlyTime.matches() && !fixedLinesC2.isEmpty()) {
+		String prev = fixedLinesC2.get(fixedLinesC2.size() - 1)
+		prev = (prev ?: "").replaceAll('\\s+$','')
+		fixedLinesC2.set(fixedLinesC2.size() - 1, prev + ':' + onlyTime[0][1])
+	} else {
+		fixedLinesC2.add(line)
+	}
+}
+textoC2 = fixedLinesC2.join('\n')
+
+// Limpieza (conservando \n)
+textoC2 = textoC2.replace('\u00A0',' ').replaceAll('[\\t\\x0B\\f\\r]+',' ')
+
+// 6) Segmentar por políticas con separador literal
+// ⛔ IMPORTANTE: NO segmentar por “o no show” (rompe la 3ra política).
+List<String> segmentosC2 = []
+String lowerC2 = (textoC2 ?: "").toLowerCase()
+final String SEP_C2 = '§§SEG_C2§§'
+final String SEP_C2_REPL = java.util.regex.Matcher.quoteReplacement(SEP_C2)
+String workC2 = (textoC2 ?: "")
+
+if (lowerC2.contains('cancelando') || lowerC2.contains('fecha y hora')) {
+	workC2 = workC2.replaceAll(
+		'(?is)(?=\\b(?:cancelando\\s+desde|cancelando\\s+despu[eé]s\\s+de|fecha y hora))',
+		SEP_C2_REPL
+	)
+} else {
+	// Fallback: antes de un cargo tipo ": 0 USD", ": $ 5.15 USD", ": 1 noche"
+	workC2 = workC2.replaceAll(
+		'(?i)(?=:\\s*(?:\\$?\\s?\\d|\\d|noche))',
+		SEP_C2_REPL
+	)
+}
+String[] rawSegsC2 = workC2.split(java.util.regex.Pattern.quote(SEP_C2))
+segmentosC2 = Arrays.asList(rawSegsC2).collect { it.trim() }.findAll { it }
+
+// 7) Regex DOTALL y parseo (incluye “o no show” dentro del segmento)
+def pDesdeHastaC2 = ~/(?is)^(?:cancelando\s+)?desde\s+(.*?)\s+hasta\s+(.*?)(?::\s*(?!\d{1,2}:)(.+))?$/
+def pDespuesDeC2  = ~/(?is)^(?:cancelando\s+)?despu[eé]s\s+de\s+(.*?)(?::\s*(?!\d{1,2}:)(.+))?$/
+def pNoShowC2     = ~/(?is)^(?:cancelando\s+)?desde\s+(.*?)\s+o\s+no[- ]?show(?::\s*(?!\d{1,2}:)(.+))?$/
+def pFechaHoraC2  = ~/(?is)^fecha y hora.*$/
+
+List<Map<String,String>> politicasCList = new ArrayList<>()
+
+segmentosC2.each { seg ->
+	String s = (seg ?: '').trim()
+	if (!s) return
+
+	def m1 = (s =~ pDesdeHastaC2)
+	def m2 = (s =~ pDespuesDeC2)
+	def mNo = (s =~ pNoShowC2)
+	def m3 = (s =~ pFechaHoraC2)
+
+	if (m1.matches()) {
+		String desde = (m1[0][1] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		String hasta = (m1[0][2] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		String cargo = (m1[0][3] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		politicasCList.add([condicion: "Cancelando desde ${desde} hasta ${hasta}", cargo: cargo])
+	} else if (m2.matches()) {
+		String despues = (m2[0][1] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		String cargo   = (m2[0][2] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		politicasCList.add([condicion: "Cancelando después de ${despues}", cargo: cargo])
+	} else if (mNo.matches()) {
+		String desde = (mNo[0][1] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		String cargo = (mNo[0][2] ?: '').replace('\u00A0',' ').replaceAll('\\s+',' ').trim()
+		politicasCList.add([condicion: "Cancelando desde ${desde} o no show", cargo: cargo])
+	} else if (m3.matches()) {
+		politicasCList.add([condicion: "Fecha y hora calculada basándose en el huso horario de destino.", cargo: "N/A"])
+	}
+}
+
+// 8) Publicar en politicasC y log
+politicasC.clear()
+politicasC.addAll(politicasCList)
+
+KeywordUtil.logInfo("📋 [C] Políticas capturadas (estandarizadas):")
+for (int i = 0; i < politicasC.size(); i++) {
+	String msg = "📌 Política ${i+1}: Condición='${politicasC[i]['condicion']}' | Cargo='${politicasC[i]['cargo']}'"
+	println(msg)
+	KeywordUtil.logInfo(msg)
+}
+
+// 9) Comparación B vs C
+def _normTextCc2 = { String s -> (s ?: "").replace('\u00A0',' ').replaceAll('\\s+',' ').trim() }
+def _toCmpCc2    = { Map m -> [condicion: _normTextCc2(m.condicion), cargo: _normTextCc2(m.cargo)] }
+
+List<Map<String,String>> _B_Ccmp2 = (politicasB ?: []).collect { _toCmpCc2(it) }
+List<Map<String,String>> _C_Ccmp2 = (politicasC ?: []).collect { _toCmpCc2(it) }
+
+if (_B_Ccmp2.isEmpty()) {
+	KeywordUtil.markWarning("⚠️ [C] No hay políticas del paso B para comparar.")
+} else {
+	if (_B_Ccmp2.size() != _C_Ccmp2.size()) {
+		KeywordUtil.markWarning("⚠️ [C] Cantidad difiere: B=${_B_Ccmp2.size()} vs C=${_C_Ccmp2.size()} (se comparará por índice).")
+	}
+	KeywordUtil.logInfo("🔍 [C] Comparando B vs C…")
+	int maxCompararC2 = Math.max(_B_Ccmp2.size(), _C_Ccmp2.size())
+	for (int i = 0; i < maxCompararC2; i++) {
+		def b = i < _B_Ccmp2.size() ? _B_Ccmp2[i] : [condicion:"N/A", cargo:"N/A"]
+		def c = i < _C_Ccmp2.size() ? _C_Ccmp2[i] : [condicion:"N/A", cargo:"N/A"]
+		if (b.condicion == c.condicion && b.cargo == c.cargo) {
+			KeywordUtil.logInfo("✅ [C] Política ${i+1} coincide entre B y C.")
+		} else {
+			KeywordUtil.markWarning("❌ [C] Diferencia en política ${i+1}: B='${b}' vs C='${c}'")
+		}
+	}
+}
+
+// 10) Cerrar modal
+TestObject cerrarPoliticaBtnC2 = new TestObject("cerrarPoliticaBtn_C2")
+cerrarPoliticaBtnC2.addProperty(
+	"xpath",
+	ConditionType.EQUALS,
+	"//div[(contains(@class,'modal') and contains(@class,'in')) or (contains(@class,'modal') and contains(@style,'display: block'))]//button[contains(@class,'close') or @aria-label='Cerrar']"
+)
+if (WebUI.waitForElementVisible(cerrarPoliticaBtnC2, 10, FailureHandling.OPTIONAL)) {
+	try {
+		WebUI.click(cerrarPoliticaBtnC2)
+		KeywordUtil.logInfo("🧩 [C] Modal cerrado (click normal).")
+	} catch (Exception e) {
+		WebUI.executeJavaScript("arguments[0].click();", Arrays.asList(WebUiCommonHelper.findWebElement(cerrarPoliticaBtnC2, 10)))
+		KeywordUtil.logInfo("🪄 [C] Modal cerrado (click JS).")
+	}
+} else {
+	KeywordUtil.markWarning("⚠️ [C] No se encontró la 'X' para cerrar el modal.")
+}
+TestObject overlayModalInC2 = new TestObject("overlayModalIn_C2")
+overlayModalInC2.addProperty("xpath", ConditionType.EQUALS, "//div[contains(@class,'modal') and (contains(@class,'in') or contains(@style,'display: block'))]")
+WebUI.waitForElementNotPresent(overlayModalInC2, 10)
+WebUI.delay(0.5)
 
 // 📤 Finalizar y cancelar
 WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_book'))

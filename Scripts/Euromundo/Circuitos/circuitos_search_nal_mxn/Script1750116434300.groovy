@@ -46,6 +46,7 @@ WebUI.click(findTestObject('Euromundo/circuitos/repository_circuitos_nal/select_
 // 📍 Origen y destino
 WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/input_destination_inter'), 15)
 WebUI.click(findTestObject('Euromundo/book_steps/button_close_cookies'))
+WebUI.waitForElementClickable(findTestObject('Euromundo/book_steps/input_destination_inter'), 15)
 WebUI.selectOptionByValue(findTestObject('Euromundo/book_steps/input_destination_inter'), '185205', true)
 CustomKeywords.'utils.FechaUtils.seleccionarPrimerDiaDisponibleCalendario'('Euromundo/book_steps/origin_date_inter') // 📅 Fecha
 

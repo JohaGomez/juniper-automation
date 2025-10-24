@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>gd_search_inter_flight_aerobus</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>284634c4-8915-4bbc-9c9c-06f7d4189840</testCaseGuid>
+</TestCaseEntity>

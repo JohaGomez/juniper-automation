@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>gd_search_nal_hotel_change</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>8ed04cbe-a1cb-4f39-83d3-35ad05d1d636</testCaseGuid>
+   <variableLinks>
+      <testDataLinkId></testDataLinkId>
+      <type>DEFAULT</type>
+      <value></value>
+      <variableId>86d37e12-e6b5-4e6c-9072-b4b84841300a</variableId>
+   </variableLinks>
+   <variableLinks>
+      <testDataLinkId></testDataLinkId>
+      <type>DEFAULT</type>
+      <value></value>
+      <variableId>f85e9e32-afe4-4f09-8f95-a7debcd6f6cd</variableId>
+   </variableLinks>
+   <variable>
+      <defaultValue>'5'</defaultValue>
+      <description></description>
+      <id>86d37e12-e6b5-4e6c-9072-b4b84841300a</id>
+      <masked>false</masked>
+      <name>edadNino1</name>
+   </variable>
+   <variable>
+      <defaultValue>'0'</defaultValue>
+      <description></description>
+      <id>f85e9e32-afe4-4f09-8f95-a7debcd6f6cd</id>
+      <masked>false</masked>
+      <name>edadInf1</name>
+   </variable>
+</TestCaseEntity>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>hoteles_search_inter_walm_quote</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>cd26efff-b037-442c-9970-786dec87474d</testCaseGuid>
+</TestCaseEntity>

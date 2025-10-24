@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>vct_search_nal_add_extras</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>b485bf3a-5015-4f97-ae51-8093334f2e99</testCaseGuid>
+</TestCaseEntity>

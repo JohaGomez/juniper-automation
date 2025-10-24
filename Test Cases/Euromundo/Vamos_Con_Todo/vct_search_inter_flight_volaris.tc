@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>vct_search_inter_flight_volaris</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>b2b1100f-edd5-43c5-977f-78ac4fb632fc</testCaseGuid>
+</TestCaseEntity>

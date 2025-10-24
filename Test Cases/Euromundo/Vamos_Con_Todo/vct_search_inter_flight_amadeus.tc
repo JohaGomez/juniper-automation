@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>vct_search_inter_flight_amadeus</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>914a7e72-4fa4-4baa-ac76-4cb785caa01c</testCaseGuid>
+</TestCaseEntity>

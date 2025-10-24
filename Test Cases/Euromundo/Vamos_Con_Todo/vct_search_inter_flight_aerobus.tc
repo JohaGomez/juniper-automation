@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>vct_search_inter_flight_aerobus</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>2a79e812-0f2d-4360-9da0-90a2ba1be4ce</testCaseGuid>
+</TestCaseEntity>

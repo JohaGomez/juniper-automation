@@ -32,7 +32,8 @@ import com.kms.katalon.core.model.FailureHandling
 import com.kms.katalon.core.testobject.TestObject
 import utils.ValidacionesPreciosTabla
 import com.kms.katalon.core.model.FailureHandling as FH
-
+import utils.ValidacionesPrebook
+import org.openqa.selenium.interactions.Actions
 // 🚪 Login
 WebUI.callTestCase(findTestCase('Euromundo/Login/Login_otn'), [:], FailureHandling.STOP_ON_FAILURE)
 
@@ -132,20 +133,6 @@ TestObject mejorPrecioObj = new TestObject().addProperty(
 // --- Llamar a la keyword para capturar y validar el precio en página de resultados ---
 double mejorPrecio = CustomKeywords.'utils.ValidacionPrecios.validarMejorPrecioEnResultados'(mejorPrecioObj)
 
-// ⚖️ Política de cancelación (validación estricta con normalize-space)
-TestObject policyFees = new TestObject('policyFees')
-policyFees.addProperty(
-	'xpath',
-	ConditionType.EQUALS,
-	"//div[contains(@class,'col-sm-12') and contains(normalize-space(.),'Reserva sujeta a gastos de cancelación')]"
-)
-
-if (WebUI.waitForElementPresent(policyFees, 5, FailureHandling.OPTIONAL)) {
-	String txt = WebUI.getText(policyFees)?.trim()
-	KeywordUtil.markFailedAndStop("🚫 Política restrictiva detectada: ${txt}")
-} else {
-	KeywordUtil.logInfo("✅ No se detectó política restrictiva, el flujo continúa.")
-}
 
 // 🏨 Selección hotel
 CustomKeywords.'helpers.WebUIHelper.safeClick'(findTestObject('Euromundo/book_steps/button_prebook_gd_inter'))
@@ -181,6 +168,45 @@ if(tituloGuardado.equals(tituloNuevo)) {
 	println("❌ Los títulos son diferentes")
 }
 
+// =========================================
+// ⚠️ Manejo de cambio de precio en warning
+// =========================================
+TestObject warningPrecioObj = new TestObject("warningPrecio")
+warningPrecioObj.addProperty("xpath", ConditionType.EQUALS,
+	"//div[@class='booking-warning__content']"
+)
+
+if (WebUI.verifyElementPresent(warningPrecioObj, 5, FailureHandling.OPTIONAL)) {
+	KeywordUtil.logInfo("⚠️ Apareció un warning de cambio de precio")
+
+	String warningText = WebUI.getText(warningPrecioObj)?.trim()
+	KeywordUtil.logInfo("📌 Texto warning: ${warningText}")
+
+	// Regex que captura precios en USD o MXN
+	def matcher = (warningText =~ /\$?\s?([\d.,]+)\s?(USD|MXN)/)
+	def precios = matcher.collect {
+		[valor: it[1]?.trim(), moneda: it[2]]
+	}
+
+	if (!precios.isEmpty()) {
+		def ultimoPrecio = precios.last()
+		String nuevoPrecioStr = ultimoPrecio.valor
+		String moneda = ultimoPrecio.moneda
+
+		try {
+			// 🚀 Solo aquí se usa parseMoney
+			mejorPrecio = ValidacionesPrebook.parseMoney(nuevoPrecioStr)
+			KeywordUtil.logInfo("💲 Nuevo precio detectado (warning): ${mejorPrecio} ${moneda}")
+		} catch (Exception e) {
+			KeywordUtil.markWarning("⚠️ No se pudo convertir el nuevo precio: ${nuevoPrecioStr} ${moneda}")
+		}
+	} else {
+		KeywordUtil.markWarning("⚠️ No se pudo extraer ningún precio del warning")
+	}
+} else {
+	KeywordUtil.logInfo("✅ No apareció ningún warning de cambio de precio")
+}
+
 // TestObjects de la página de pasajeros para validación de precios
 TestObject precioObj = new TestObject().addProperty("xpath", ConditionType.EQUALS,
 	"//div[@class='booking-breakdown__item booking-breakdown__item--total booking-breakdown__item--is-pay-web']//span[@class='booking-breakdown__item-price']")
@@ -198,6 +224,21 @@ CustomKeywords.'utils.ValidacionesPrebook.validarPrecioPrebook'(
 	totalAdeudadoObj,
 	mejorPrecio
 )
+
+// ⚖️ Política de cancelación (validación estricta con normalize-space)
+TestObject policyFees = new TestObject('policyFees')
+policyFees.addProperty(
+	'xpath',
+	ConditionType.EQUALS,
+	"//div[contains(@class,'col-sm-12') and contains(normalize-space(.),'Reserva sujeta a gastos de cancelación')]"
+)
+
+if (WebUI.waitForElementPresent(policyFees, 5, FailureHandling.OPTIONAL)) {
+	String txt = WebUI.getText(policyFees)?.trim()
+	KeywordUtil.markFailedAndStop("🚫 Política restrictiva detectada: ${txt}")
+} else {
+	KeywordUtil.logInfo("✅ No se detectó política restrictiva, el flujo continúa.")
+}
 
 WebUI.click(findTestObject('Euromundo/book_steps/button_finalization_prebook'))
 

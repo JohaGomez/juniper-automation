@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>gd_search_inter_flight_volaris</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>6fa3cc4c-7796-4d06-b036-7cf1ada8f746</testCaseGuid>
+</TestCaseEntity>

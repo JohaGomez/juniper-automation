@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>hoteles_search_nal_quote</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>fb93a579-2b64-4fde-871f-8a175bcb6820</testCaseGuid>
+</TestCaseEntity>

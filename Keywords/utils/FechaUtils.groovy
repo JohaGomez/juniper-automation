@@ -149,35 +149,45 @@ public class FechaUtils {
 	}
 
 	/**
-	 * ✅ Método 5: Setea una fecha aleatoria que caiga en LUNES dentro de 2 semanas después de 3 meses desde hoy
+	 * ✅ Método 5: Setea una fecha aleatoria que caiga en LUNES dentro de 1 MES desde hoy
 	 */
 	@Keyword
-	def setFechaLunesEnTresMeses(String testObjectPath, String formato = "dd/MM/yyyy") {
-		LocalDate fechaInicio = LocalDate.now().plusMonths(4)
-		LocalDate fechaFin = fechaInicio.plusWeeks(2)
+	def setFechaLunesEnUnMesAleatorio(String testObjectPath, String formato = "dd/MM/yyyy") {
+		// 📅 Definir rango: el mes que empieza dentro de 1 mes desde hoy
+		LocalDate inicioMes = LocalDate.now().plusMonths(1).withDayOfMonth(1)
+		LocalDate finMes = inicioMes.withDayOfMonth(inicioMes.lengthOfMonth())
+
+		// Lista para almacenar los lunes encontrados en ese mes
 		List<LocalDate> lunesDisponibles = []
 
-		while (!fechaInicio.isAfter(fechaFin)) {
-			if (fechaInicio.getDayOfWeek().getValue() == 1) {
+		// Recorre todos los días del mes y agrega los lunes
+		LocalDate fechaActual = inicioMes
+		while (!fechaActual.isAfter(finMes)) {
+			if (fechaActual.getDayOfWeek().getValue() == 1) {
 				// 1 = Lunes
-				lunesDisponibles.add(fechaInicio)
+				lunesDisponibles.add(fechaActual)
 			}
-			fechaInicio = fechaInicio.plusDays(1)
+			fechaActual = fechaActual.plusDays(1)
 		}
 
+		// Validar que haya lunes
 		if (lunesDisponibles.isEmpty()) {
-			WebUI.comment("⚠️ No se encontró ningún lunes en el rango.")
+			WebUI.comment("⚠️ No se encontró ningún lunes en el mes.")
 			return null
 		}
 
+		// Seleccionar un lunes aleatorio
 		LocalDate fechaSeleccionada = lunesDisponibles.get(new Random().nextInt(lunesDisponibles.size()))
 		String fechaFormateada = fechaSeleccionada.format(DateTimeFormatter.ofPattern(formato))
 
-		WebUI.setText(OR.findTestObject(testObjectPath), fechaFormateada)
-		WebUI.comment("📅 Lunes aleatorio seteado: " + fechaFormateada)
+		// Escribir la fecha en el campo
+		WebUI.setText(findTestObject(testObjectPath), fechaFormateada)
+		WebUI.comment("📅 Lunes aleatorio del mes siguiente seleccionado: " + fechaFormateada)
+
 		return fechaFormateada
 	}
-	
+
+
 	/**
 	 * ✅ Método combinado:
 	 * - Si el elemento es un input, selecciona el primer día habilitado del calendario.
@@ -236,7 +246,7 @@ public class FechaUtils {
 		// 🚫 3️⃣ Si no es ni input ni select
 		WebUI.comment("⚠️ Tipo de elemento no reconocido (${tagName}), no se aplicó acción.")
 	}
-	
+
 
 	/**
 	 * ✅ Método 7 Hoteles:
@@ -435,7 +445,7 @@ public class FechaUtils {
 
 		return fechaFormateada
 	}
-	
+
 	@Keyword
 	def setFechaAleatoriaUnMesFuturo(String testObjectPath, String formato = "dd/MM/yyyy") {
 		// ===============================
@@ -492,7 +502,4 @@ public class FechaUtils {
 		WebUI.comment("⚠️ Tipo de elemento no reconocido (${tagName}). No se aplicó acción.")
 		ret
 	}
-	
-	
-	
 }

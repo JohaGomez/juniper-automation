@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>incorrect_login_mxn</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>bd300c1f-658a-495b-9cc0-ea34e9070794</testCaseGuid>
+</TestCaseEntity>

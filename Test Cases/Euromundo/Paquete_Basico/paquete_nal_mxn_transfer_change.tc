@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>paquete_nal_mxn_transfer_change</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>e1d54a76-3b86-4b65-b724-35a96e7fe936</testCaseGuid>
+</TestCaseEntity>

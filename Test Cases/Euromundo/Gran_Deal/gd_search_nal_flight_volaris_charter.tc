@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>gd_search_nal_flight_volaris_charter</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>e8f13d98-7de8-4a9a-8412-26d9cedf66cb</testCaseGuid>
+   <variableLinks>
+      <testDataLinkId></testDataLinkId>
+      <type>DEFAULT</type>
+      <value></value>
+      <variableId>f9d4a623-e191-46bf-8fc0-501666e26faf</variableId>
+   </variableLinks>
+   <variableLinks>
+      <testDataLinkId></testDataLinkId>
+      <type>DEFAULT</type>
+      <value></value>
+      <variableId>ca79bc8c-5770-46f1-abe7-54cde75f2515</variableId>
+   </variableLinks>
+   <variable>
+      <defaultValue>'5'</defaultValue>
+      <description></description>
+      <id>f9d4a623-e191-46bf-8fc0-501666e26faf</id>
+      <masked>false</masked>
+      <name>edadNino1</name>
+   </variable>
+   <variable>
+      <defaultValue>'0'</defaultValue>
+      <description></description>
+      <id>ca79bc8c-5770-46f1-abe7-54cde75f2515</id>
+      <masked>false</masked>
+      <name>edadInf1</name>
+   </variable>
+</TestCaseEntity>

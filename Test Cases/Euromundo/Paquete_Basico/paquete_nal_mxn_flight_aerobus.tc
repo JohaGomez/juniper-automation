@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>paquete_nal_mxn_flight_aerobus</name>
+   <tag></tag>
+   <comment></comment>
+   <recordOption>OTHER</recordOption>
+   <testCaseGuid>e24579a6-33f5-4231-9b1c-59b213f6aa00</testCaseGuid>
+</TestCaseEntity>

@@ -27,13 +27,13 @@
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>['2']</initValue>
+      <initValue>['10', '17']</initValue>
       <name>edadesNinos</name>
       <protected>false</protected>
    </GlobalVariableEntity>
    <GlobalVariableEntity>
       <description></description>
-      <initValue>['']</initValue>
+      <initValue>['1']</initValue>
       <name>edadesInfantes</name>
       <protected>false</protected>
    </GlobalVariableEntity>

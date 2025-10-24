@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>set_rooms_pax_inter</name>
+   <tag></tag>
+   <elementGuidId>4f3c5c8a-3cc0-4ce4-aa66-077aba199928</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>BASIC</key>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//*[@id=&quot;package-searcher-_ctl1__ctl1__ctl1_pageBody_pageBody_searcher__ctl0_ctlRoomSelector-room-selector-button&quot;]&#xd;
+|&#xd;
+//*[@id=&quot;insurance-searcher-_ctl1__ctl1__ctl1_pageBody_pageBody_searcher__ctl0_ctlRoomSelector-room-selector-button&quot;]&#xd;
+|&#xd;
+//*[@id=&quot;insurances-searcher-_ctl1__ctl1__ctl1_pageBody_pageHeader_searcher__ctl0_ctlRoomSelector-room-selector-button&quot;]</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>false</useRalativeImagePath>
+</WebElementEntity>
